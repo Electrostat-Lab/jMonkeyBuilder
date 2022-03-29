@@ -3,7 +3,7 @@ package com.ss.editor;
 import com.jme3x.jfx.injfx.processor.FrameTransferSceneProcessor;
 import com.ss.editor.config.Config;
 import com.ss.editor.config.EditorConfig;
-import com.ss.editor.executor.impl.EditorThreadExecutor;
+import com.ss.editor.executor.impl.GLTaskExecutor;
 import com.ss.editor.ui.builder.EditorFXSceneBuilder;
 import com.ss.editor.ui.scene.EditorFXScene;
 import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
@@ -21,7 +21,7 @@ import static com.jme3x.jfx.injfx.JmeToJFXIntegrator.bind;
  */
 public class JFXApplication extends Application {
 
-    private final EditorThreadExecutor executor = EditorThreadExecutor.getInstance();
+    private final GLTaskExecutor executor = GLTaskExecutor.getInstance();
     private final Editor editor = Editor.getInstance();
     private final EditorConfig editorConfig = EditorConfig.getInstance();
     private static JFXApplication instance;

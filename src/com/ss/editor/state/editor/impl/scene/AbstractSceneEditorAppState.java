@@ -36,6 +36,7 @@ import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.debug.WireSphere;
 import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.Quad;
+import com.ss.editor.Launcher;
 import com.ss.editor.annotation.JMEThread;
 import com.ss.editor.annotation.FromAnyThread;
 import com.ss.editor.control.editing.EditingControl;
@@ -694,56 +695,11 @@ public abstract class AbstractSceneEditorAppState<T extends AbstractSceneFileEdi
     public void update(final float tpf) {
         super.update(tpf);
 
-        final Node transformToolNode = getTransformToolNode();
-        final Transform selectionCenter = getTransformCenter();
-        final TransformType transformType = getTransformType();
-
-        // Transform Selected Objects!
-        if (isActiveTransform() && selectionCenter != null) {
-            if (transformType == TransformType.MOVE_TOOL) {
-                final TransformControl control = getMoveTool().getControl(TransformControl.class);
-                transformToolNode.detachAllChildren();
-                control.processTransform();
-            } else if (transformType == TransformType.ROTATE_TOOL) {
-                final TransformControl control = getRotateTool().getControl(TransformControl.class);
-                transformToolNode.detachAllChildren();
-                control.processTransform();
-            } else if (transformType == TransformType.SCALE_TOOL) {
-                final TransformControl control = getScaleTool().getControl(TransformControl.class);
-                transformToolNode.detachAllChildren();
-                control.processTransform();
-            }
-        }
-
-        final EditorCamera editorCamera = getEditorCamera();
-        if (editorCamera != null) editorCamera.update(tpf);
-
-        final Array<EditorLightNode> lightNodes = getLightNodes();
-        lightNodes.forEach(EditorLightNode::updateModel);
-
-        final Array<EditorAudioNode> audioNodes = getAudioNodes();
-        audioNodes.forEach(EditorAudioNode::updateModel);
-
-        final Array<Spatial> selected = getSelected();
-        selected.forEach(this, (spatial, state) -> {
-
-            final ObjectDictionary<Spatial, Spatial> selectionShape = state.getSelectionShape();
-            final Spatial shape = selectionShape.get(spatial);
-            if (shape == null) return;
-
-            if (spatial instanceof EditorLightNode) {
-                spatial = ((EditorLightNode) spatial).getModel();
-            } else if (spatial instanceof EditorAudioNode) {
-                spatial = ((EditorAudioNode) spatial).getModel();
-            }
-
-            requireNonNull(spatial);
-
-            state.updateTransformNode(spatial.getWorldTransform());
-            shape.setLocalTranslation(spatial.getWorldTranslation());
-            shape.setLocalRotation(spatial.getWorldRotation());
-            shape.setLocalScale(spatial.getWorldScale());
-        });
+        updateTransformTools();
+        updateUserSelections();
+        updateEditorCamera(tpf);
+        updateLightNodes();
+        updateAudioNodes();
 
         transformToolNode.detachAllChildren();
 
@@ -767,8 +723,70 @@ public abstract class AbstractSceneEditorAppState<T extends AbstractSceneFileEdi
             updateEditingNodes();
             updateEditing();
         }
+
+
+    }
+    private void updateTransformTools() {
+        final Node transformToolNode = getTransformToolNode();
+        final Transform selectionCenter = getTransformCenter();
+        final TransformType transformType = getTransformType();
+
+        // Transform Selected Objects!
+        if (isActiveTransform() && selectionCenter != null) {
+            if (transformType == TransformType.MOVE_TOOL) {
+                final TransformControl control = getMoveTool().getControl(TransformControl.class);
+                transformToolNode.detachAllChildren();
+                control.processTransform();
+            } else if (transformType == TransformType.ROTATE_TOOL) {
+                final TransformControl control = getRotateTool().getControl(TransformControl.class);
+                transformToolNode.detachAllChildren();
+                control.processTransform();
+            } else if (transformType == TransformType.SCALE_TOOL) {
+                final TransformControl control = getScaleTool().getControl(TransformControl.class);
+                transformToolNode.detachAllChildren();
+                control.processTransform();
+            }
+        }
     }
 
+    private void updateEditorCamera(final float tpf) {
+        final EditorCamera editorCamera = getEditorCamera();
+        if (editorCamera != null) {
+            editorCamera.update(tpf);
+        }
+    }
+
+    private void updateLightNodes() {
+        final Array<EditorLightNode> lightNodes = getLightNodes();
+        lightNodes.forEach(EditorLightNode::updateModel);
+    }
+
+    private void updateAudioNodes() {
+        final Array<EditorAudioNode> audioNodes = getAudioNodes();
+        audioNodes.forEach(EditorAudioNode::updateModel);
+    }
+
+    private void updateUserSelections() {
+        final Array<Spatial> selected = getSelected();
+        selected.forEach(this, (spatial, state) -> {
+            final Spatial shape = state.getSelectionShape().get(spatial);
+            if (shape == null) {
+                return;
+            }
+
+            if (spatial instanceof EditorLightNode) {
+                spatial = ((EditorLightNode) spatial).getModel();
+            } else if (spatial instanceof EditorAudioNode) {
+                spatial = ((EditorAudioNode) spatial).getModel();
+            }
+            if (spatial != null) {
+                state.updateTransformNode(spatial.getWorldTransform());
+                shape.setLocalTranslation(spatial.getWorldTranslation());
+                shape.setLocalRotation(spatial.getWorldRotation());
+                shape.setLocalScale(spatial.getWorldScale());
+            }
+        });
+    }
     /**
      * Update editing nodes.
      */

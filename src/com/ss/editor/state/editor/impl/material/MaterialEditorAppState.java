@@ -67,7 +67,9 @@ public class MaterialEditorAppState extends AdvancedAbstractEditorAppState<Mater
 
         @Override
         public void done(final LightProbe result) {
-            if (!isInitialized()) return;
+            if (!isInitialized()) {
+                return;
+            }
             attachModelNode();
         }
     };

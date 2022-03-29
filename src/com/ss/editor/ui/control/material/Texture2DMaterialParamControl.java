@@ -117,7 +117,7 @@ public class Texture2DMaterialParamControl extends MaterialParamControl {
         final Button addButton = new Button();
         addButton.setTooltip(new Tooltip(TEXTURE_2D_MATERIAL_PARAM_CONTROL_ADD));
         addButton.setGraphic(new ImageView(Icons.ADD_12));
-        addButton.setOnAction(event -> processAdd());
+//        addButton.setOnAction(event -> processAdd());
 
         repeatButton = new CheckBox();
         repeatButton.setTooltip(new Tooltip(TEXTURE_2D_MATERIAL_PARAM_CONTROL_REPEAT));

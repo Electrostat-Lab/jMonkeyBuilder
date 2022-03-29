@@ -14,24 +14,25 @@ import com.ss.rlib.util.array.ArrayFactory;
 import com.ss.rlib.util.array.ConcurrentArray;
 
 /**
- * The executor to execute tasks in the editor thread.
+ * The executor to dispatch tasks in the editor thread.
  *
  * @author JavaSaBr
+ * @author pavl_g.
  */
-public class EditorThreadExecutor {
+public class GLTaskExecutor extends AbstractTaskExecutor {
 
     @NotNull
-    private static final Logger LOGGER = LoggerManager.getLogger(EditorThreadExecutor.class);
+    private static final Logger LOGGER = LoggerManager.getLogger(GLTaskExecutor.class);
 
     @NotNull
-    private static final EditorThreadExecutor INSTANCE = new EditorThreadExecutor();
+    private static final GLTaskExecutor INSTANCE = new GLTaskExecutor();
 
     /**
      * Gets instance.
      *
      * @return the instance
      */
-    public static EditorThreadExecutor getInstance() {
+    public static GLTaskExecutor getInstance() {
         return INSTANCE;
     }
 
@@ -42,18 +43,18 @@ public class EditorThreadExecutor {
     private final ConcurrentArray<Runnable> waitTasks;
 
     /**
-     * The list with tasks to execute.
+     * The list with tasks to dispatch.
      */
     @NotNull
     private final Array<Runnable> execute;
 
-    private EditorThreadExecutor() {
+    private GLTaskExecutor() {
         this.waitTasks = ArrayFactory.newConcurrentAtomicARSWLockArray(Runnable.class);
         this.execute = ArrayFactory.newArray(Runnable.class);
     }
 
     /**
-     * Add a task to execute.
+     * Add a task to dispatch.
      *
      * @param task the task.
      */
@@ -66,24 +67,31 @@ public class EditorThreadExecutor {
      * Execute waited tasks.
      */
     @JMEThread
-    public void execute() {
-        if (waitTasks.isEmpty()) return;
-
-        ArrayUtils.runInWriteLock(waitTasks, execute, ArrayUtils::move);
-
-        try {
-            execute.forEach(EditorThreadExecutor::execute);
-        } finally {
-            execute.clear();
+    public void dispatch() {
+        if (waitTasks.isEmpty()) {
+            return;
         }
+        ArrayUtils.runInWriteLock(waitTasks, execute, ArrayUtils::move);
+        for (final Runnable runnable: execute.array()) {
+            GLTaskExecutor.dispatch(runnable);
+        }
+        execute.clear();
+
     }
 
     @JMEThread
-    private static void execute(@NotNull final Runnable runnable) {
+    private static void dispatch(final Runnable runnable) {
         try {
-            runnable.run();
+            if (runnable != null) {
+                runnable.run();
+            }
         } catch (final Exception e) {
             EditorUtil.handleException(LOGGER, getInstance(), e);
         }
+    }
+
+    @Override
+    protected void doExecute(@NotNull Array<Runnable> execute, @NotNull Array<Runnable> executed) {
+
     }
 }

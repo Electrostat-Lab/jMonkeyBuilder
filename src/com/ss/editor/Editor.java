@@ -1,18 +1,12 @@
 package com.ss.editor;
 
-import static com.jme3.environment.LightProbeFactory.makeProbe;
-import static com.ss.rlib.util.ObjectUtils.notNull;
-import static com.ss.rlib.util.Utils.run;
-import static java.nio.file.Files.createDirectories;
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.AssetNotFoundException;
 import com.jme3.audio.AudioRenderer;
 import com.jme3.audio.Environment;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.environment.EnvironmentCamera;
 import com.jme3.environment.LightProbeFactory;
 import com.jme3.environment.generation.JobProgressAdapter;
-import com.jme3.font.BitmapFont;
 import com.jme3.light.LightProbe;
 import com.jme3.material.Material;
 import com.jme3.material.TechniqueDef;
@@ -22,17 +16,15 @@ import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FXAAFilter;
 import com.jme3.post.filters.ToneMapFilter;
 import com.jme3.renderer.Camera;
-import com.jme3.renderer.RendererException;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.system.NativeLibraryLoader;
 import com.jme3x.jfx.injfx.JmeToJFXApplication;
 import com.jme3x.jfx.util.os.OperatingSystem;
-import com.ss.editor.analytics.google.GAnalytics;
 import com.ss.editor.config.Config;
 import com.ss.editor.config.EditorConfig;
-import com.ss.editor.executor.impl.EditorThreadExecutor;
+import com.ss.editor.executor.impl.GLTaskExecutor;
 import com.ss.editor.extension.loader.SceneLoader;
 import com.ss.editor.manager.*;
 import com.ss.editor.ui.event.FXEventManager;
@@ -43,43 +35,64 @@ import com.ss.rlib.logging.LoggerManager;
 import com.ss.rlib.logging.impl.FolderFileListener;
 import com.ss.rlib.manager.InitializeManager;
 import jme3_ext_xbuf.XbufLoader;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import tonegod.emitter.filter.TonegodTranslucentBucketFilter;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.locks.StampedLock;
 import java.util.logging.Level;
+import static com.jme3.environment.LightProbeFactory.makeProbe;
+import static com.ss.rlib.util.ObjectUtils.notNull;
+import static com.ss.rlib.util.Utils.run;
+import static java.nio.file.Files.createDirectories;
 
 /**
  * The implementation of the {@link com.jme3.app.Application} of this Editor.
  *
  * @author JavaSaBr
+ * @author pavl_g.
  */
 public class Editor extends JmeToJFXApplication {
 
-    @NotNull
+    /**
+     * The main synchronizer of this application.
+     */
+    private final StampedLock lock;
+    private final Node previewNode;
+    private ViewPort previewViewPort;
+    private Camera previewCamera;
+    private EnvironmentCamera environmentCamera;
+    private EnvironmentCamera previewEnvironmentCamera;
+    private LightProbe lightProbe;
+    private LightProbe previewLightProbe;
+    private FilterPostProcessor postProcessor;
+    private FXAAFilter fxaaFilter;
+    private ToneMapFilter toneMapFilter;
+    private TonegodTranslucentBucketFilter translucentBucketFilter;
+    private Material defaultMaterial;
+    private static final Editor EDITOR = new Editor();
+
     private static final Logger LOGGER = LoggerManager.getLogger(Editor.class);
 
     /**
      * The empty job adapter for handling creating {@link LightProbe}.
      */
-    @NotNull
     private static final JobProgressAdapter<LightProbe> EMPTY_JOB_ADAPTER = new JobProgressAdapter<LightProbe>() {
         public void done(final LightProbe result) {
         }
     };
 
-    @NotNull
-    private static final Editor EDITOR = new Editor();
+    private Editor() {
+        this.lock = new StampedLock();
+        this.previewNode = new Node("Preview Node");
+    }
+
+
 
     /**
      * Gets instance.
      *
      * @return the instance
      */
-    @NotNull
     public static Editor getInstance() {
         return EDITOR;
     }
@@ -89,8 +102,7 @@ public class Editor extends JmeToJFXApplication {
      *
      * @return the editor
      */
-    @NotNull
-    static Editor prepareToStart() {
+    public static Editor prepareToStart() {
 
         if (Config.DEV_DEBUG) {
             System.err.println("config is loaded.");
@@ -138,96 +150,6 @@ public class Editor extends JmeToJFXApplication {
     }
 
     /**
-     * The main synchronizer of this application.
-     */
-    @NotNull
-    private final StampedLock lock;
-
-    /**
-     * The node for preview.
-     */
-    @NotNull
-    private final Node previewNode;
-
-    /**
-     * The preview view port.
-     */
-    @Nullable
-    private ViewPort previewViewPort;
-
-    /**
-     * The camera for preview.
-     */
-    @Nullable
-    private Camera previewCamera;
-
-    /**
-     * The environment camera.
-     */
-    @Nullable
-    private EnvironmentCamera environmentCamera;
-
-    /**
-     * The preview environment camera.
-     */
-    @Nullable
-    private EnvironmentCamera previewEnvironmentCamera;
-
-    /**
-     * The light probe.
-     */
-    @Nullable
-    private LightProbe lightProbe;
-
-    /**
-     * The preview light probe.
-     */
-    @Nullable
-    private LightProbe previewLightProbe;
-
-    /**
-     * The processor of post effects.
-     */
-    @Nullable
-    private FilterPostProcessor postProcessor;
-
-    /**
-     * The FXAA filter.
-     */
-    @Nullable
-    private FXAAFilter fxaaFilter;
-
-    /**
-     * The filter of color correction.
-     */
-    @Nullable
-    private ToneMapFilter toneMapFilter;
-
-    /**
-     * The translucent bucket filter.
-     */
-    @Nullable
-    private TonegodTranslucentBucketFilter translucentBucketFilter;
-
-    /**
-     * The default material.
-     */
-    @Nullable
-    private Material defaultMaterial;
-
-    private Editor() {
-        this.lock = new StampedLock();
-        this.previewNode = new Node("Preview Node");
-    }
-
-    public static void dispatchJFXApplication() {
-        final JmeToJFXApplication application = Editor.prepareToStart();
-        final ThreadGroup editorGroup = new ThreadGroup("Editor-Group");
-        final Runnable startWrapper = application::start;
-        final EditorThread editorThread = new EditorThread(editorGroup, startWrapper, "LWJGL Render");
-        editorThread.start();
-    }
-    /**
      * Lock the render thread for other actions.
      *
      * @return the long
@@ -256,7 +178,6 @@ public class Editor extends JmeToJFXApplication {
     }
 
     @Override
-    @NotNull
     public Camera getCamera() {
         return super.getCamera();
     }
@@ -268,6 +189,7 @@ public class Editor extends JmeToJFXApplication {
         NativeLibraryLoader.loadNativeLibrary("jinput-dx8", true);
 
         super.start();
+
     }
 
     @Override
@@ -349,7 +271,8 @@ public class Editor extends JmeToJFXApplication {
 
         createProbe();
 
-        new EditorThread(new ThreadGroup("JavaFX"), JFXApplication::beginUiTransactions, "JavaFX Launch").start();
+        ExecutorManager.dispatchJfxThread();
+
     }
 
     /**
@@ -364,15 +287,6 @@ public class Editor extends JmeToJFXApplication {
      */
     private void syncUnlock(final long stamp) {
         lock.unlockWrite(stamp);
-    }
-
-    /**
-     * Try to lock render thread for doing actions with game scene.
-     *
-     * @return the long
-     */
-    public long trySyncLock() {
-        return lock.tryWriteLock();
     }
 
     @Override
@@ -407,38 +321,15 @@ public class Editor extends JmeToJFXApplication {
 
     @Override
     public void update() {
+        // update the editor enqueued components before being hooked to jme3 update
         final long stamp = syncLock();
-        try {
-
-            final EditorThreadExecutor editorThreadExecutor = EditorThreadExecutor.getInstance();
-            editorThreadExecutor.execute();
-
-            //System.out.println(cam.getRotation());
-            //System.out.println(cam.getLocation());
-
-            super.update();
-
-        } catch (final AssetNotFoundException | RendererException | AssertionError | ArrayIndexOutOfBoundsException |
-                NullPointerException | StackOverflowError | IllegalStateException | UnsupportedOperationException e) {
-            LOGGER.warning(e);
-            finishWorkOnError(e);
-        } finally {
-            syncUnlock(stamp);
-        }
-
+        final GLTaskExecutor editorGLTaskExecutor = GLTaskExecutor.getInstance();
+        editorGLTaskExecutor.dispatch();
+        // hook up jme3 update --> calls --> simpleUpdate
+        super.update();
+        syncUnlock(stamp);
         listener.setLocation(cam.getLocation());
         listener.setRotation(cam.getRotation());
-    }
-
-    private void finishWorkOnError(@NotNull final Throwable e) {
-
-        GAnalytics.sendException(e, true);
-        GAnalytics.waitForSend();
-
-        final WorkspaceManager workspaceManager = WorkspaceManager.getInstance();
-        workspaceManager.clear();
-
-        System.exit(2);
     }
 
     /**
@@ -446,7 +337,6 @@ public class Editor extends JmeToJFXApplication {
      *
      * @return the processor of post effects.
      */
-    @NotNull
     public FilterPostProcessor getPostProcessor() {
         return notNull(postProcessor);
     }
@@ -464,8 +354,8 @@ public class Editor extends JmeToJFXApplication {
         }
 
         if (environmentCamera.getApplication() == null) {
-            final EditorThreadExecutor gameThreadExecutor = EditorThreadExecutor.getInstance();
-            gameThreadExecutor.addToExecute(this::createProbe);
+            final GLTaskExecutor gameGLTaskExecutor = GLTaskExecutor.getInstance();
+            gameGLTaskExecutor.addToExecute(this::createProbe);
             return;
         }
 
@@ -487,7 +377,7 @@ public class Editor extends JmeToJFXApplication {
      *
      * @param progressAdapter the progress adapter
      */
-    public void updateProbe(@NotNull final JobProgressAdapter<LightProbe> progressAdapter) {
+    public void updateProbe(final JobProgressAdapter<LightProbe> progressAdapter) {
 
         final LightProbe lightProbe = getLightProbe();
         final EnvironmentCamera environmentCamera = getEnvironmentCamera();
@@ -505,7 +395,7 @@ public class Editor extends JmeToJFXApplication {
      *
      * @param progressAdapter the progress adapter
      */
-    public void updatePreviewProbe(@NotNull final JobProgressAdapter<LightProbe> progressAdapter) {
+    public void updatePreviewProbe(final JobProgressAdapter<LightProbe> progressAdapter) {
 
         final LightProbe lightProbe = getPreviewLightProbe();
         final EnvironmentCamera environmentCamera = getPreviewEnvironmentCamera();
@@ -519,9 +409,17 @@ public class Editor extends JmeToJFXApplication {
     }
 
     /**
+     * Sets paused.
+     *
+     * @param paused true if this app is paused.
+     */
+    protected void setPaused(final boolean paused) {
+        this.paused = paused;
+    }
+
+    /**
      * @return the light probe.
      */
-    @Nullable
     private LightProbe getLightProbe() {
         return lightProbe;
     }
@@ -531,15 +429,13 @@ public class Editor extends JmeToJFXApplication {
      *
      * @return The preview view port.
      */
-    @NotNull
     public ViewPort getPreviewViewPort() {
-        return notNull(previewViewPort);
+        return previewViewPort;
     }
 
     /**
      * @return the preview light probe.
      */
-    @Nullable
     private LightProbe getPreviewLightProbe() {
         return previewLightProbe;
     }
@@ -547,7 +443,6 @@ public class Editor extends JmeToJFXApplication {
     /**
      * @return the environment camera.
      */
-    @Nullable
     private EnvironmentCamera getEnvironmentCamera() {
         return environmentCamera;
     }
@@ -557,15 +452,13 @@ public class Editor extends JmeToJFXApplication {
      *
      * @return the camera for preview.
      */
-    @NotNull
     public Camera getPreviewCamera() {
-        return notNull(previewCamera);
+        return previewCamera;
     }
 
     /**
      * @return the preview environment camera.
      */
-    @Nullable
     private EnvironmentCamera getPreviewEnvironmentCamera() {
         return previewEnvironmentCamera;
     }
@@ -575,9 +468,8 @@ public class Editor extends JmeToJFXApplication {
      *
      * @return the node for preview.
      */
-    @NotNull
     public Node getPreviewNode() {
-        return notNull(previewNode);
+        return previewNode;
     }
 
     /**
@@ -585,9 +477,8 @@ public class Editor extends JmeToJFXApplication {
      *
      * @return the filter of color correction.
      */
-    @NotNull
     public ToneMapFilter getToneMapFilter() {
-        return notNull(toneMapFilter);
+        return toneMapFilter;
     }
 
     /**
@@ -604,28 +495,8 @@ public class Editor extends JmeToJFXApplication {
      *
      * @return the translucent bucket filter.
      */
-    @NotNull
     public TonegodTranslucentBucketFilter getTranslucentBucketFilter() {
-        return notNull(translucentBucketFilter);
-    }
-
-    /**
-     * Sets paused.
-     *
-     * @param paused true if this app is paused.
-     */
-    void setPaused(final boolean paused) {
-        this.paused = paused;
-    }
-
-    /**
-     * Gets gui font.
-     *
-     * @return the gui font.
-     */
-    @Nullable
-    public BitmapFont getGuiFont() {
-        return notNull(guiFont);
+        return translucentBucketFilter;
     }
 
     /**
@@ -633,8 +504,7 @@ public class Editor extends JmeToJFXApplication {
      *
      * @return the default material.
      */
-    @NotNull
     public Material getDefaultMaterial() {
-        return notNull(defaultMaterial);
+        return defaultMaterial;
     }
 }

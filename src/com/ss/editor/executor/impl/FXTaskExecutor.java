@@ -12,11 +12,11 @@ import com.ss.rlib.concurrent.util.ThreadUtils;
 import com.ss.rlib.util.array.Array;
 
 /**
- * The executor to execute tasks in the FX UI Thread.
+ * The executor to dispatch tasks in the FX UI Thread.
  *
  * @author JavaSaBr
  */
-public class FXEditorTaskExecutor extends AbstractEditorTaskExecutor {
+public class FXTaskExecutor extends AbstractTaskExecutor {
 
     private static final int EXECUTE_LIMIT = 300;
 
@@ -29,8 +29,8 @@ public class FXEditorTaskExecutor extends AbstractEditorTaskExecutor {
     /**
      * Instantiates a new Fx editor task executor.
      */
-    public FXEditorTaskExecutor() {
-        setName(FXEditorTaskExecutor.class.getSimpleName());
+    public FXTaskExecutor() {
+        setName(FXTaskExecutor.class.getSimpleName());
         setPriority(NORM_PRIORITY);
         PlatformImpl.startup(this::start);
     }

@@ -30,7 +30,7 @@ import com.ss.editor.JFXApplication;
 import com.ss.editor.annotation.FXThread;
 import com.ss.editor.annotation.FromAnyThread;
 import com.ss.editor.annotation.JMEThread;
-import com.ss.editor.executor.impl.EditorThreadExecutor;
+import com.ss.editor.executor.impl.GLTaskExecutor;
 import com.ss.editor.model.tool.TangentGenerator;
 import com.ss.editor.ui.scene.EditorFXScene;
 import com.ss.editor.util.EditorUtil;
@@ -81,7 +81,7 @@ public class JMEFilePreviewManager extends AbstractControl {
     }
 
     @NotNull
-    private static final EditorThreadExecutor EDITOR_THREAD_EXECUTOR = EditorThreadExecutor.getInstance();
+    private static final GLTaskExecutor EDITOR_THREAD_EXECUTOR = GLTaskExecutor.getInstance();
 
     @NotNull
     private static final JFXApplication JFX_APPLICATION = JFXApplication.getInstance();
@@ -182,7 +182,7 @@ public class JMEFilePreviewManager extends AbstractControl {
 
         TangentGenerator.useMikktspaceGenerator(testBox);
 
-        final EditorThreadExecutor executor = EditorThreadExecutor.getInstance();
+        final GLTaskExecutor executor = GLTaskExecutor.getInstance();
         executor.addToExecute(this::prepareScene);
     }
 

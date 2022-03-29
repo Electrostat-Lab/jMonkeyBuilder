@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author JavaSaBr
  */
-public interface EditorTaskExecutor {
+public interface TaskExecutor {
 
     /**
      * Add a new task.

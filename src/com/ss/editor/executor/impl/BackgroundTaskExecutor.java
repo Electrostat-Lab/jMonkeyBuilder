@@ -5,11 +5,11 @@ import com.ss.rlib.util.array.Array;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The implementation of the {@link EditorThreadExecutor} for executing task in the background.
+ * The implementation of the {@link GLTaskExecutor} for executing task in the background.
  *
  * @author JavaSaBr
  */
-public class BackgroundEditorTaskExecutor extends AbstractEditorTaskExecutor {
+public class BackgroundTaskExecutor extends AbstractTaskExecutor {
 
     /**
      * The runtime of this process.
@@ -17,12 +17,12 @@ public class BackgroundEditorTaskExecutor extends AbstractEditorTaskExecutor {
     private static final Runtime RUNTIME = Runtime.getRuntime();
 
     /**
-     * The max count of task to execute using the same time.
+     * The max count of task to dispatch using the same time.
      */
     private static final int PROP_MAXIMUM_UPDATE = 500 / RUNTIME.availableProcessors();
 
     /**
-     * The max count of task to execute in the one iteration.
+     * The max count of task to dispatch in the one iteration.
      */
     private static final int PROP_EXECUTE_LIMIT = 5;
 
@@ -31,8 +31,8 @@ public class BackgroundEditorTaskExecutor extends AbstractEditorTaskExecutor {
      *
      * @param order the order
      */
-    public BackgroundEditorTaskExecutor(final int order) {
-        setName(BackgroundEditorTaskExecutor.class.getSimpleName() + "_" + order);
+    public BackgroundTaskExecutor(final int order) {
+        setName(BackgroundTaskExecutor.class.getSimpleName() + "_" + order);
         setPriority(NORM_PRIORITY - 2);
         start();
     }

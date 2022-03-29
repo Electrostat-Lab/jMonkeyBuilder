@@ -1,7 +1,7 @@
 package com.ss.editor.executor.impl;
 
 import com.ss.editor.EditorThread;
-import com.ss.editor.executor.EditorTaskExecutor;
+import com.ss.editor.executor.TaskExecutor;
 import com.ss.rlib.concurrent.lock.LockFactory;
 import com.ss.rlib.concurrent.lock.Lockable;
 import com.ss.rlib.concurrent.util.ConcurrentUtils;
@@ -15,20 +15,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 
 /**
- * The base implementation of the {@link EditorThreadExecutor}.
+ * The base implementation of the {@link GLTaskExecutor}.
  *
  * @author JavaSaBr
  */
-public abstract class AbstractEditorTaskExecutor extends EditorThread implements EditorTaskExecutor, Lockable {
+public abstract class AbstractTaskExecutor extends EditorThread implements TaskExecutor, Lockable {
 
     /**
      * The constant LOGGER.
      */
     @NotNull
-    protected static final Logger LOGGER = LoggerManager.getLogger(EditorTaskExecutor.class);
+    protected static final Logger LOGGER = LoggerManager.getLogger(TaskExecutor.class);
 
     /**
-     * The array of task to execute for each iteration.
+     * The array of task to dispatch for each iteration.
      */
     @NotNull
     protected final Array<Runnable> execute;
@@ -40,7 +40,7 @@ public abstract class AbstractEditorTaskExecutor extends EditorThread implements
     final Array<Runnable> executed;
 
     /**
-     * The array of task to execute.
+     * The array of task to dispatch.
      */
     @NotNull
     final Array<Runnable> waitTasks;
@@ -60,7 +60,7 @@ public abstract class AbstractEditorTaskExecutor extends EditorThread implements
     /**
      * Instantiates a new Abstract editor task executor.
      */
-    public AbstractEditorTaskExecutor() {
+    public AbstractTaskExecutor() {
         this.execute = createExecuteArray();
         this.executed = createExecuteArray();
         this.waitTasks = createExecuteArray();
@@ -95,7 +95,7 @@ public abstract class AbstractEditorTaskExecutor extends EditorThread implements
     /**
      * Execute the array of tasks.
      *
-     * @param execute  the execute
+     * @param execute  the dispatch
      * @param executed the executed
      */
     protected abstract void doExecute(@NotNull final Array<Runnable> execute, @NotNull final Array<Runnable> executed);

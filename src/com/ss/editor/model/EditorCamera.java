@@ -521,47 +521,6 @@ public class EditorCamera implements ActionListener, AnalogListener, Control {
                     trailingLerpFactor = 0;
                 }
             }
-
-            //linear interpolation of the distance while chasing
-            if (chasing) {
-                distance = temp.set(targetLocation).subtractLocal(camera.getLocation()).length();
-                distanceLerpFactor = min(distanceLerpFactor + (tpf * tpf * chasingSensitivity * 0.05f), 1);
-                distance = FastMath.interpolateLinear(distanceLerpFactor, distance, targetDistance);
-                if (targetDistance + 0.01f >= distance && targetDistance - 0.01f <= distance) {
-                    distanceLerpFactor = 0;
-                    chasing = false;
-                }
-            }
-
-            //linear interpolation of the distance while zooming
-            if (zooming) {
-                distanceLerpFactor = min(distanceLerpFactor + (tpf * tpf * zoomSensitivity), 1);
-                distance = FastMath.interpolateLinear(distanceLerpFactor, distance, targetDistance);
-                if (targetDistance + 0.1f >= distance && targetDistance - 0.1f <= distance) {
-                    zooming = false;
-                    distanceLerpFactor = 0;
-                }
-            }
-
-            //linear interpolation of the rotation while rotating horizontally
-            if (rotating) {
-                rotationLerpFactor = min(rotationLerpFactor + tpf * tpf * rotationSensitivity, 1);
-                rotation = FastMath.interpolateLinear(rotationLerpFactor, rotation, targetRotation);
-                if (targetRotation + 0.01f >= rotation && targetRotation - 0.01f <= rotation) {
-                    rotating = false;
-                    rotationLerpFactor = 0;
-                }
-            }
-
-            //linear interpolation of the rotation while rotating vertically
-            if (verticalRotating) {
-                vRotationLerpFactor = min(vRotationLerpFactor + tpf * tpf * rotationSensitivity, 1);
-                verticalRotation = FastMath.interpolateLinear(vRotationLerpFactor, verticalRotation, targetVRotation);
-                if (targetVRotation + 0.01f >= verticalRotation && targetVRotation - 0.01f <= verticalRotation) {
-                    verticalRotating = false;
-                    vRotationLerpFactor = 0;
-                }
-            }
             //computing the position
             computePosition();
             //setting the position at last

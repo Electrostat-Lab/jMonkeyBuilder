@@ -1,8 +1,8 @@
 package com.ss.editor.util;
 
-import static java.lang.Thread.currentThread;
 import com.jme3.math.*;
-import com.ss.editor.EditorThread;
+import com.ss.editor.executor.throwable.GLThreadException;
+import com.ss.editor.manager.ExecutorManager;
 import org.jetbrains.annotations.NotNull;
 import com.ss.rlib.util.CycleBuffer;
 
@@ -20,9 +20,15 @@ public class LocalObjects {
      *
      * @return the local objects
      */
-    @NotNull
     public static LocalObjects get() {
-        return ((EditorThread) currentThread()).getLocal();
+        LocalObjects localObjects = null;
+        try {
+            localObjects = ExecutorManager.getGLThread().getLocal();
+        } catch (GLThreadException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return localObjects;
     }
 
     /**
