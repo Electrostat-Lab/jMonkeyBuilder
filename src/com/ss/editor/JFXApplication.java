@@ -4,8 +4,10 @@ import com.jme3x.jfx.injfx.processor.FrameTransferSceneProcessor;
 import com.ss.editor.config.Config;
 import com.ss.editor.config.EditorConfig;
 import com.ss.editor.executor.impl.GLTaskExecutor;
+import com.ss.editor.manager.*;
 import com.ss.editor.ui.builder.EditorFXSceneBuilder;
 import com.ss.editor.ui.scene.EditorFXScene;
+import com.ss.rlib.manager.InitializeManager;
 import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -33,6 +35,12 @@ public class JFXApplication extends Application {
      * Begins the editor Ui in a new jfx instance.
      */
     public static void beginUiTransactions() {
+        InitializeManager.register(ResourceManager.class);
+        InitializeManager.register(JavaFXImageManager.class);
+        InitializeManager.register(FileIconManager.class);
+        InitializeManager.register(WorkspaceManager.class);
+        InitializeManager.register(ClasspathManager.class);
+
         launch();
     }
 
@@ -46,8 +54,13 @@ public class JFXApplication extends Application {
         JFXApplication.instance = this;
         this.stage = stage;
         SvgImageLoaderFactory.install();
+
         final EditorConfig setupConfig = setupDefaultStageConfig(stage);
         observeWindowChanges(setupConfig);
+
+        // start jme renderer with lwjgl on a gl thread
+        ExecutorManager.dispatchGLThread();
+
 
         buildScene();
     }

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The control to edit spatial values from asset.
+ * The controller to edit spatial values from asset.
  *
  * @author JavaSaBr
  */

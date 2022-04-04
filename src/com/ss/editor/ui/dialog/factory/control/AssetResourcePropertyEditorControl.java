@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.util.function.Predicate;
 
 /**
- * The control to edit resource values from asset.
+ * The controller to edit resource values from asset.
  *
  * @author JavaSaBr
  */

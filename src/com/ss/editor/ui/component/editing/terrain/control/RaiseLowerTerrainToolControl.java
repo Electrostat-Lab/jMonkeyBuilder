@@ -25,7 +25,7 @@ import java.util.List;
 public class RaiseLowerTerrainToolControl extends ChangeHeightTerrainToolControl {
 
     /**
-     * Instantiates a new Raise lower terrain tool control.
+     * Instantiates a new Raise lower terrain tool controller.
      *
      * @param component the component
      */

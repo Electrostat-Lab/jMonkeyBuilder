@@ -41,7 +41,7 @@ public class TerrainToolControl extends AbstractEditingControl {
     private float brushPower;
 
     /**
-     * Instantiates a new Terrain tool control.
+     * Instantiates a new Terrain tool controller.
      *
      * @param component the component
      */

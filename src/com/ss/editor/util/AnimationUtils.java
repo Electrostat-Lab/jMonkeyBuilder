@@ -111,7 +111,7 @@ public class AnimationUtils {
     /**
      * Chane a name of an animation.
      *
-     * @param control   the animation control.
+     * @param control   the animation controller.
      * @param animation the animation.
      * @param oldName   the old name.
      * @param newName   the new name.
@@ -165,7 +165,7 @@ public class AnimationUtils {
     /**
      * Get a free name to make an animation.
      *
-     * @param control the animation control.
+     * @param control the animation controller.
      * @param base    the base name.
      * @return the free name.
      */

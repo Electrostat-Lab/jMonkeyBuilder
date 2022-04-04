@@ -219,7 +219,7 @@ public class UIUtils {
             Class<?>[] declaredClasses = Tooltip.class.getDeclaredClasses();
 
             for (Class<?> declaredClass : declaredClasses) {
-                if (declaredClass.getCanonicalName().equals("javafx.scene.control.Tooltip.TooltipBehavior")) {
+                if (declaredClass.getCanonicalName().equals("javafx.scene.controller.Tooltip.TooltipBehavior")) {
                     tooltipBehaviourClass = declaredClass;
                     break;
                 }

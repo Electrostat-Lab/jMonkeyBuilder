@@ -58,7 +58,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The Skeleton control deforms a model according to a skeleton, It handles the
+ * The Skeleton controller deforms a model according to a skeleton, It handles the
  * computation of the deformation matrices and performs the transformations on
  * the mesh
  *
@@ -72,7 +72,7 @@ public class SkeletonControl extends AbstractControl implements Cloneable, JmeCl
     private Skeleton skeleton;
 
     /**
-     * List of geometries affected by this control.
+     * List of geometries affected by this controller.
      */
     private SafeArrayList<Geometry> targets = new SafeArrayList<Geometry>(Geometry.class);
 
@@ -209,8 +209,8 @@ public class SkeletonControl extends AbstractControl implements Cloneable, JmeCl
     }
 
     /**
-     * Creates a skeleton control. The list of targets will be acquired
-     * automatically when the control is attached to a node.
+     * Creates a skeleton controller. The list of targets will be acquired
+     * automatically when the controller is attached to a node.
      *
      * @param skeleton the skeleton
      */
@@ -488,7 +488,7 @@ public class SkeletonControl extends AbstractControl implements Cloneable, JmeCl
     }
 
     /**
-     * returns the skeleton of this control
+     * returns the skeleton of this controller
      *
      * @return skeleton
      */
@@ -497,7 +497,7 @@ public class SkeletonControl extends AbstractControl implements Cloneable, JmeCl
     }
 
     /**
-     * Enumerate the target meshes of this control.
+     * Enumerate the target meshes of this controller.
      *
      * @return a new array
      */

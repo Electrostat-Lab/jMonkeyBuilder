@@ -57,7 +57,7 @@ public class SlopeTerrainToolControl extends ChangeHeightTerrainToolControl {
     private boolean lock;
 
     /**
-     * Instantiates a new Slope terrain tool control.
+     * Instantiates a new Slope terrain tool controller.
      *
      * @param component the component
      */

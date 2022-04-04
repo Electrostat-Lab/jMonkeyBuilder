@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The control to edit resource values.
+ * The controller to edit resource values.
  *
  * @author JavaSaBr
  */

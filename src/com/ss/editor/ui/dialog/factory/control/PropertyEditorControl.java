@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The base implementation of an editor control to edit properties on the factory dialog.
+ * The base implementation of an editor controller to edit properties on the factory dialog.
  *
  * @author JavaSaBr
  */

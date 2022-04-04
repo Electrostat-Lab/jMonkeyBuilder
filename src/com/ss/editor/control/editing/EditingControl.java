@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The interface to implement editing control.
+ * The interface to implement editing controller.
  *
  * @author JavaSaBr
  */
@@ -66,7 +66,7 @@ public interface EditingControl extends Control {
     /**
      * Is started editing boolean.
      *
-     * @return true if this control started editing.
+     * @return true if this controller started editing.
      */
     @JMEThread
     default boolean isStartedEditing() {

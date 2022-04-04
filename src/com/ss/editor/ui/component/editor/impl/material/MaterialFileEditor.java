@@ -88,7 +88,7 @@ public class MaterialFileEditor extends AbstractFileEditor<StackPane> implements
     private static final ObservableList<RenderQueue.Bucket> BUCKETS = observableArrayList(values());
 
     /**
-     * The operation control.
+     * The operation controller.
      */
     @NotNull
     private final EditorOperationControl operationControl;
@@ -258,7 +258,7 @@ public class MaterialFileEditor extends AbstractFileEditor<StackPane> implements
     }
 
     /**
-     * @return the operation control.
+     * @return the operation controller.
      */
     @NotNull
     private EditorOperationControl getOperationControl() {

@@ -21,7 +21,7 @@ import com.ss.rlib.logging.LoggerManager;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The implementation of the moving control.
+ * The implementation of the moving controller.
  *
  * @author JavaSaBr
  */
@@ -58,9 +58,9 @@ public class MoveToolControl extends AbstractControl implements TransformControl
     private final Node collisionPlane;
 
     /**
-     * Instantiates a new Move tool control.
+     * Instantiates a new Move tool controller.
      *
-     * @param editorControl the editor control
+     * @param editorControl the editor controller
      */
     public MoveToolControl(@NotNull final SceneEditorControl editorControl) {
         this.editorControl = editorControl;

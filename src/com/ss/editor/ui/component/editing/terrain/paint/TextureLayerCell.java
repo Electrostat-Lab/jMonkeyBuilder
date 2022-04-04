@@ -3,8 +3,8 @@ package com.ss.editor.ui.component.editing.terrain.paint;
 import static com.ss.editor.ui.component.editing.terrain.TerrainEditingComponent.FIELD_PERCENT;
 import static com.ss.editor.ui.component.editing.terrain.TerrainEditingComponent.LABEL_PERCENT;
 import com.ss.editor.Messages;
-import com.ss.editor.ui.control.choose.NamedChooseTextureControl;
-import com.ss.editor.ui.control.property.AbstractPropertyControl;
+import com.ss.editor.ui.controller.choose.NominatedTextureController;
+import com.ss.editor.ui.controller.property.AbstractPropertyControl;
 import com.ss.editor.ui.css.CSSClasses;
 import com.ss.rlib.ui.control.input.FloatTextField;
 import com.ss.rlib.ui.util.FXUtils;
@@ -12,77 +12,74 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.GridPane;
-import org.jetbrains.annotations.NotNull;
-
 import java.nio.file.Path;
 
 /**
- * The implementation of a list cell to edit/show a texture layer.
+ * Texture layer cell adapter.
  *
  * @author JavaSaBr
+ * @author pavl_g.
  */
 public class TextureLayerCell extends ListCell<TextureLayer> {
 
-    /**
-     * The diffuse texture chooser.
-     */
-    @NotNull
-    private final NamedChooseTextureControl diffuseTextureControl;
+    private NominatedTextureController diffuseTextureControl;
+    private NominatedTextureController normalTextureControl;
 
-    /**
-     * The normal texture chooser.
-     */
-    @NotNull
-    private final NamedChooseTextureControl normalTextureControl;
+    private FloatTextField scaleField;
+    private Label layerField;
+    private GridPane settingContainer;
+    private Label scaleController;
 
-    /**
-     * The texture scale field.
-     */
-    @NotNull
-    private final FloatTextField scaleField;
-
-    /**
-     * The layer field.
-     */
-    @NotNull
-    private final Label layerField;
-
-    /**
-     * The settings container.
-     */
-    @NotNull
-    private final GridPane settingContainer;
-
-    /**
-     * The flag of ignoring listeners.
-     */
     private boolean ignoreListeners;
 
     /**
      * Instantiates a new Texture layer cell.
-     *  @param prefWidth the pref width
+     *
+     * @param prefWidth the pref width
      * @param maxWidth  the max width
      */
-    public TextureLayerCell(final DoubleBinding prefWidth,
-                            final DoubleBinding maxWidth) {
+    public TextureLayerCell(DoubleBinding prefWidth, DoubleBinding maxWidth) {
+        initContainer(prefWidth, maxWidth);
 
+        initLayerImageField();
+        initDiffuseTextureController();
+        initNormalTextureController();
+        initScaleController();
+
+        FXUtils.addClassTo(settingContainer, CSSClasses.DEF_GRID_PANE);
+        FXUtils.addClassTo(layerField, CSSClasses.ABSTRACT_PARAM_CONTROL_PARAM_NAME);
+        FXUtils.addClassTo(this, CSSClasses.PROCESSING_COMPONENT_TERRAIN_EDITOR_TEXTURE_LAYER);
+        FXUtils.addClassTo(scaleController, CSSClasses.ABSTRACT_PARAM_CONTROL_PARAM_NAME_SINGLE_ROW);
+        FXUtils.addClassTo(scaleField, CSSClasses.ABSTRACT_PARAM_CONTROL_COMBO_BOX);
+
+    }
+    private void initContainer(DoubleBinding prefWidth, DoubleBinding maxWidth) {
         settingContainer = new GridPane();
         settingContainer.prefWidthProperty().bind(prefWidth);
         settingContainer.maxWidthProperty().bind(maxWidth);
-
+    }
+    private void initLayerImageField() {
         layerField = new Label();
         layerField.prefWidthProperty().bind(settingContainer.widthProperty());
-
-        diffuseTextureControl = new NamedChooseTextureControl("Diffuse");
+        settingContainer.add(layerField, 0, 0, 2, 1);
+    }
+    private void initDiffuseTextureController() {
+        diffuseTextureControl = new NominatedTextureController("Diffuse");
+        diffuseTextureControl.startUiTransactions();
         diffuseTextureControl.setChangeHandler(this::updateDiffuse);
         diffuseTextureControl.setControlWidthPercent(AbstractPropertyControl.CONTROL_WIDTH_PERCENT_2);
-
-        normalTextureControl = new NamedChooseTextureControl("Normal");
+        settingContainer.add(diffuseTextureControl, 0, 1, 2, 1);
+    }
+    private void initNormalTextureController() {
+        normalTextureControl = new NominatedTextureController("Normal");
+        normalTextureControl.startUiTransactions();
         normalTextureControl.setChangeHandler(this::updateNormal);
         normalTextureControl.setControlWidthPercent(AbstractPropertyControl.CONTROL_WIDTH_PERCENT_2);
-
-        final Label scaleLabel = new Label(Messages.EDITING_COMPONENT_SCALE + ":");
-        scaleLabel.prefWidthProperty().bind(settingContainer.widthProperty().multiply(LABEL_PERCENT));
+        settingContainer.add(normalTextureControl, 0, 2, 2, 1);
+    }
+    private void initScaleController() {
+        scaleController = new Label(Messages.EDITING_COMPONENT_SCALE + ":");
+        scaleController.prefWidthProperty().bind(settingContainer.widthProperty().multiply(LABEL_PERCENT));
 
         scaleField = new FloatTextField();
         scaleField.setMinMax(0.0001F, Integer.MAX_VALUE);
@@ -90,23 +87,13 @@ public class TextureLayerCell extends ListCell<TextureLayer> {
         scaleField.addChangeListener((observable, oldValue, newValue) -> updateScale(newValue));
         scaleField.prefWidthProperty().bind(settingContainer.widthProperty().multiply(FIELD_PERCENT));
 
-        settingContainer.add(layerField, 0, 0, 2, 1);
-        settingContainer.add(diffuseTextureControl, 0, 1, 2, 1);
-        settingContainer.add(normalTextureControl, 0, 2, 2, 1);
-        settingContainer.add(scaleLabel, 0, 3);
+        settingContainer.add(scaleController, 0, 3);
         settingContainer.add(scaleField, 1, 3);
 
-        FXUtils.addClassTo(settingContainer, CSSClasses.DEF_GRID_PANE);
-        FXUtils.addClassTo(layerField, CSSClasses.ABSTRACT_PARAM_CONTROL_PARAM_NAME);
-        FXUtils.addClassTo(scaleLabel, CSSClasses.ABSTRACT_PARAM_CONTROL_PARAM_NAME_SINGLE_ROW);
-        FXUtils.addClassTo(scaleField, CSSClasses.ABSTRACT_PARAM_CONTROL_COMBO_BOX);
-        FXUtils.addClassTo(this, CSSClasses.PROCESSING_COMPONENT_TERRAIN_EDITOR_TEXTURE_LAYER);
     }
-
     /**
      * @return the texture scale field.
      */
-    @NotNull
     private FloatTextField getScaleField() {
         return scaleField;
     }
@@ -114,23 +101,20 @@ public class TextureLayerCell extends ListCell<TextureLayer> {
     /**
      * @return the diffuse texture chooser.
      */
-    @NotNull
-    private NamedChooseTextureControl getDiffuseTextureControl() {
+    public NominatedTextureController getDiffuseTextureControl() {
         return diffuseTextureControl;
     }
 
     /**
      * @return the normal texture chooser.
      */
-    @NotNull
-    private NamedChooseTextureControl getNormalTextureControl() {
+    private NominatedTextureController getNormalTextureControl() {
         return normalTextureControl;
     }
 
     /**
      * @return the layer field.
      */
-    @NotNull
     private Label getLayerField() {
         return layerField;
     }
@@ -138,7 +122,6 @@ public class TextureLayerCell extends ListCell<TextureLayer> {
     /**
      * @return the settings container.
      */
-    @NotNull
     private GridPane getSettingContainer() {
         return settingContainer;
     }
@@ -160,18 +143,21 @@ public class TextureLayerCell extends ListCell<TextureLayer> {
     /**
      * Update texture scale.
      */
-    private void updateScale(@NotNull final Float newValue) {
-        if (isIgnoreListeners()) return;
+    private void updateScale(final Float newValue) {
+        if (isIgnoreListeners()) {
+            return;
+        }
         getItem().setScale(newValue);
-
     }
 
     /**
      * Update a normal texture.
      */
     private void updateNormal() {
-        if (isIgnoreListeners()) return;
-        final NamedChooseTextureControl normalTextureControl = getNormalTextureControl();
+        if (isIgnoreListeners()) {
+            return;
+        }
+        final NominatedTextureController normalTextureControl = getNormalTextureControl();
         final Path textureFile = normalTextureControl.getTextureFile();
         getItem().setNormalFile(textureFile);
     }
@@ -180,8 +166,10 @@ public class TextureLayerCell extends ListCell<TextureLayer> {
      * Update a diffuse texture.
      */
     private void updateDiffuse() {
-        if (isIgnoreListeners()) return;
-        final NamedChooseTextureControl diffuseTextureControl = getDiffuseTextureControl();
+        if (isIgnoreListeners() ) {
+            return;
+        }
+        final NominatedTextureController diffuseTextureControl = getDiffuseTextureControl();
         final Path textureFile = diffuseTextureControl.getTextureFile();
         getItem().setDiffuseFile(textureFile);
     }
@@ -204,7 +192,7 @@ public class TextureLayerCell extends ListCell<TextureLayer> {
     /**
      * Refresh this cell.
      */
-    protected void refresh() {
+    protected final void refresh() {
 
         final TextureLayer item = getItem();
         if (item == null) return;
@@ -215,10 +203,10 @@ public class TextureLayerCell extends ListCell<TextureLayer> {
             final FloatTextField scaleField = getScaleField();
             scaleField.setValue(item.getScale());
 
-            final NamedChooseTextureControl normalTextureControl = getNormalTextureControl();
+            final NominatedTextureController normalTextureControl = getNormalTextureControl();
             normalTextureControl.setTextureFile(item.getNormalFile());
 
-            final NamedChooseTextureControl diffuseTextureControl = getDiffuseTextureControl();
+            final NominatedTextureController diffuseTextureControl = getDiffuseTextureControl();
             diffuseTextureControl.setTextureFile(item.getDiffuseFile());
 
             final Label layerField = getLayerField();

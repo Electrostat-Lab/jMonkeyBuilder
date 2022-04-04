@@ -42,7 +42,7 @@ public class RoughTerrainToolControl extends ChangeHeightTerrainToolControl {
     private float scale;
 
     /**
-     * Instantiates a new Rough terrain tool control.
+     * Instantiates a new Rough terrain tool controller.
      *
      * @param component the component
      */

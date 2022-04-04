@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.nio.file.Path;
 
 /**
- * The control to edit spatial values from asset.
+ * The controller to edit spatial values from asset.
  *
  * @author JavaSaBr
  */

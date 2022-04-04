@@ -25,7 +25,7 @@ import com.ss.rlib.logging.Logger;
 import com.ss.rlib.logging.LoggerManager;
 
 /**
- * The implementation of the scaling control.
+ * The implementation of the scaling controller.
  *
  * @author JavaSaBr
  */
@@ -57,9 +57,9 @@ public class ScaleToolControl extends AbstractControl implements TransformContro
     private final Node collisionPlane;
 
     /**
-     * Instantiates a new Scale tool control.
+     * Instantiates a new Scale tool controller.
      *
-     * @param editorControl the editor control
+     * @param editorControl the editor controller
      */
     public ScaleToolControl(@NotNull final SceneEditorControl editorControl) {
         this.editorControl = editorControl;

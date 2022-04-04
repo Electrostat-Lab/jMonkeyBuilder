@@ -10,7 +10,7 @@ import com.jme3.material.RenderState.FaceCullMode;
 import com.ss.editor.Messages;
 import com.ss.editor.model.undo.EditorOperation;
 import com.ss.editor.ui.component.editor.impl.material.operation.RenderStateOperation;
-import com.ss.editor.ui.control.material.MaterialParamControl;
+import com.ss.editor.ui.controller.material.MaterialParamControl;
 import com.ss.editor.ui.css.CSSClasses;
 import com.ss.rlib.ui.control.input.FloatTextField;
 import com.ss.rlib.ui.util.FXUtils;

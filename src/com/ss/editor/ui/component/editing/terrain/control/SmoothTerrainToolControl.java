@@ -26,7 +26,7 @@ import java.util.List;
 public class SmoothTerrainToolControl extends ChangeHeightTerrainToolControl {
 
     /**
-     * Instantiates a new Smooth terrain tool control.
+     * Instantiates a new Smooth terrain tool controller.
      *
      * @param component the component
      */

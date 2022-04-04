@@ -4,10 +4,10 @@ import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.shader.VarType;
 import com.ss.editor.model.undo.EditorOperation;
-import com.ss.editor.ui.control.material.BooleanMaterialParamControl;
-import com.ss.editor.ui.control.material.FloatMaterialParamControl;
-import com.ss.editor.ui.control.material.IntegerMaterialParamControl;
-import com.ss.editor.ui.control.material.MaterialParamControl;
+import com.ss.editor.ui.controller.material.BooleanMaterialParamControl;
+import com.ss.editor.ui.controller.material.FloatMaterialParamControl;
+import com.ss.editor.ui.controller.material.IntegerMaterialParamControl;
+import com.ss.editor.ui.controller.material.MaterialParamControl;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -7,7 +7,7 @@ import com.ss.editor.annotation.JMEThread;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The interface to implement a transformation control.
+ * The interface to implement a transformation controller.
  *
  * @author JavaSaBr
  */

@@ -285,7 +285,7 @@ public abstract class AdvancedAbstractEditorAppState<T extends FileEditor> exten
     private int cameraMoving;
 
     /**
-     * Is control pressed.
+     * Is controller pressed.
      */
     private boolean controlDown;
 
@@ -637,18 +637,18 @@ public abstract class AdvancedAbstractEditorAppState<T extends FileEditor> exten
     }
 
     /**
-     * Is control down boolean.
+     * Is controller down boolean.
      *
-     * @return true if control is pressed.
+     * @return true if controller is pressed.
      */
     protected boolean isControlDown() {
         return controlDown;
     }
 
     /**
-     * Sets control down.
+     * Sets controller down.
      *
-     * @param controlDown the control is pressed.
+     * @param controlDown the controller is pressed.
      */
     protected void setControlDown(final boolean controlDown) {
         this.controlDown = controlDown;

@@ -4,7 +4,7 @@ import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.material.MaterialDef;
 import com.ss.editor.model.undo.EditorOperation;
-import com.ss.editor.ui.control.material.MaterialParamControl;
+import com.ss.editor.ui.controller.material.MaterialParamControl;
 import com.ss.editor.ui.css.CSSClasses;
 import com.ss.rlib.ui.util.FXUtils;
 import com.ss.rlib.util.StringUtils;
@@ -67,7 +67,7 @@ public abstract class AbstractMaterialPropertiesComponent extends VBox {
     }
 
     /**
-     * Build a control to edit the material parameter.
+     * Build a controller to edit the material parameter.
      *
      * @param matParam the mat param
      * @param material the material

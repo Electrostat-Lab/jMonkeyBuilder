@@ -292,7 +292,6 @@ public class GeomUtils {
         ray.setDirection(dir);
 
         final CollisionResults results = new CollisionResults();
-
         spatial.updateModelBound();
         spatial.collideWith(ray, results);
 

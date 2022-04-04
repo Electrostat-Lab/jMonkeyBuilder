@@ -810,7 +810,7 @@ public abstract class Spatial implements Savable, Cloneable, Collidable, Cloneab
      *
      * @param rm The RenderManager rendering the Spatial.
      * @param vp The ViewPort to which the Spatial is being rendered to.
-     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.control.Control)
+     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.controller.Control)
      * @see Spatial#getControl(java.lang.Class) Spatial#getControl(java.lang.Class)
      */
     public void runControlRender(RenderManager rm, ViewPort vp) {
@@ -824,9 +824,9 @@ public abstract class Spatial implements Savable, Cloneable, Collidable, Cloneab
     }
 
     /**
-     * Add a control to the list of controls.
+     * Add a controller to the list of controls.
      *
-     * @param control The control to add.
+     * @param control The controller to add.
      * @see Spatial#removeControl(java.lang.Class) Spatial#removeControl(java.lang.Class)
      */
     public void addControl(Control control) {
@@ -843,10 +843,10 @@ public abstract class Spatial implements Savable, Cloneable, Collidable, Cloneab
     }
 
     /**
-     * Removes the first control that is an instance of the given class.
+     * Removes the first controller that is an instance of the given class.
      *
-     * @param controlType the control type
-     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.control.Control)
+     * @param controlType the controller type
+     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.controller.Control)
      */
     public void removeControl(Class<? extends Control> controlType) {
         boolean before = requiresUpdates();
@@ -867,11 +867,11 @@ public abstract class Spatial implements Savable, Cloneable, Collidable, Cloneab
     }
 
     /**
-     * Removes the given control from this spatial's controls.
+     * Removes the given controller from this spatial's controls.
      *
-     * @param control The control to remove
-     * @return True if the control was successfully removed. False if the control is not assigned to this spatial.
-     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.control.Control)
+     * @param control The controller to remove
+     * @return True if the controller was successfully removed. False if the controller is not assigned to this spatial.
+     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.controller.Control)
      */
     public boolean removeControl(Control control) {
         boolean before = requiresUpdates();
@@ -891,13 +891,13 @@ public abstract class Spatial implements Savable, Cloneable, Collidable, Cloneab
     }
 
     /**
-     * Returns the first control that is an instance of the given class,
-     * or null if no such control exists.
+     * Returns the first controller that is an instance of the given class,
+     * or null if no such controller exists.
      *
      * @param <T>         the type parameter
-     * @param controlType The superclass of the control to look for.
+     * @param controlType The superclass of the controller to look for.
      * @return The first instance in the list of the controlType class, or null.
-     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.control.Control)
+     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.controller.Control)
      */
     public <T extends Control> T getControl(Class<T> controlType) {
         for (Control c : controls.getArray()) {
@@ -909,12 +909,12 @@ public abstract class Spatial implements Savable, Cloneable, Collidable, Cloneab
     }
 
     /**
-     * Returns the control at the given index in the list.
+     * Returns the controller at the given index in the list.
      *
-     * @param index The index of the control in the list to find.
-     * @return The control at the given index.
+     * @param index The index of the controller in the list to find.
+     * @return The controller at the given index.
      * @throws IndexOutOfBoundsException If the index is outside the range [0, getNumControls()-1]
-     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.control.Control)
+     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.controller.Control)
      */
     public Control getControl(int index) {
         return controls.get(index);
@@ -924,7 +924,7 @@ public abstract class Spatial implements Savable, Cloneable, Collidable, Cloneab
      * Gets num controls.
      *
      * @return The number of controls attached to this Spatial.
-     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.control.Control)
+     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.controller.Control)
      * @see Spatial#removeControl(java.lang.Class) Spatial#removeControl(java.lang.Class)
      */
     public int getNumControls() {
@@ -936,7 +936,7 @@ public abstract class Spatial implements Savable, Cloneable, Collidable, Cloneab
      * for all controls attached to this Spatial.
      *
      * @param tpf Time per frame.
-     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.control.Control)
+     * @see Spatial#addControl(com.jme3.scene.control.Control) Spatial#addControl(com.jme3.scene.controller.Control)
      */
     public void updateLogicalState(float tpf) {
         runControlUpdate(tpf);
@@ -1733,7 +1733,7 @@ public abstract class Spatial implements Savable, Cloneable, Collidable, Cloneab
 
         //changed for backward compatibility with j3o files generated before the AnimControl/SkeletonControl split
         //the AnimControl creates the SkeletonControl for old files and add it to the spatial.
-        //The SkeletonControl must be the last in the stack so we add the list of all other control before it.
+        //The SkeletonControl must be the last in the stack so we add the list of all other controller before it.
         //When backward compatibility won't be needed anymore this can be replaced by :
         //controls = ic.readSavableArrayList("controlsList", null));
         controls.addAll(0, ic.readSavableArrayList("controlsList", null));

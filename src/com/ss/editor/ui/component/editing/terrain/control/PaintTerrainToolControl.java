@@ -12,7 +12,7 @@ import com.jme3.util.BufferUtils;
 import com.ss.editor.control.editing.EditingInput;
 import com.ss.editor.model.undo.editor.ModelChangeConsumer;
 import com.ss.editor.ui.component.editing.terrain.TerrainEditingComponent;
-import com.ss.editor.ui.control.model.property.operation.ModelPropertyOperation;
+import com.ss.editor.ui.controller.model.property.operation.ModelPropertyOperation;
 import com.ss.editor.util.LocalObjects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -133,7 +133,7 @@ public class PaintTerrainToolControl extends TerrainToolControl {
     private int layer;
 
     /**
-     * Instantiates a new Paint terrain tool control.
+     * Instantiates a new Paint terrain tool controller.
      *
      * @param component the component
      */

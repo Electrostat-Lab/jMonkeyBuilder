@@ -3,16 +3,19 @@ package com.ss.editor.ui.component.editing.terrain.paint;
 import static com.ss.editor.util.EditorUtil.*;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
+import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
+import com.jme3.texture.Texture2D;
 import com.ss.editor.Editor;
 import com.ss.editor.annotation.FromAnyThread;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 
 /**
- * The model of texture layer.
+ * The data model of texture layer.
  *
  * @author JavaSaBr
  */
@@ -110,7 +113,12 @@ public class TextureLayer implements Comparable<TextureLayer> {
         final AssetManager assetManager = EDITOR.getAssetManager();
         final Path assetFile = diffuseFile == null ? null : getAssetFile(diffuseFile);
         final String assetPath = assetFile == null ? null : toAssetPath(assetFile);
-        final Texture texture = assetPath == null ? null : assetManager.loadTexture(assetPath);
+        Texture texture = assetPath == null ? null : assetManager.loadTexture(assetPath);
+        // fix for issue
+        if (texture == null) {
+            texture = assetManager.loadTexture("graphics/textures/sprite/default.png");
+        }
+
         settings.setDiffuse(texture, getLayer());
     }
 

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The control to edit boolean values.
+ * The controller to edit boolean values.
  *
  * @author JavaSaBr
  */

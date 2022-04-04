@@ -19,10 +19,10 @@ import org.jetbrains.annotations.Nullable;
 public class EditingUtils {
 
     /**
-     * Get an editing control of a cursor node.
+     * Get an editing controller of a cursor node.
      *
      * @param cursorNode the cursor node.
-     * @return the editing control or null.
+     * @return the editing controller or null.
      */
     @Nullable
     public static EditingControl getEditingControl(@NotNull final Node cursorNode) {
@@ -44,7 +44,7 @@ public class EditingUtils {
     /**
      * Get an edit model.
      *
-     * @param control the editing control.
+     * @param control the editing controller.
      * @return the edited model or null.
      */
     @Nullable

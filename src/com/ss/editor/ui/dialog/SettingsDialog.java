@@ -296,7 +296,7 @@ public class SettingsDialog extends EditorDialog {
     }
 
     /**
-     * Create the additional classpath control.
+     * Create the additional classpath controller.
      */
     private void createAdditionalClasspathControl(@NotNull final VBox root) {
 
@@ -334,7 +334,7 @@ public class SettingsDialog extends EditorDialog {
     }
 
     /**
-     * Create the additional envs control.
+     * Create the additional envs controller.
      */
     private void createAdditionalEnvsControl(@NotNull final VBox root) {
 
@@ -454,7 +454,7 @@ public class SettingsDialog extends EditorDialog {
     }
 
     /**
-     * Create gamma correction control.
+     * Create gamma correction controller.
      */
     private void createGammaCorrectionControl(@NotNull final VBox root) {
 
@@ -476,7 +476,7 @@ public class SettingsDialog extends EditorDialog {
     }
 
     /**
-     * Create tonemap filter control.
+     * Create tonemap filter controller.
      */
     private void createToneMapFilterControl(@NotNull final VBox root) {
 
@@ -497,7 +497,7 @@ public class SettingsDialog extends EditorDialog {
     }
 
     /**
-     * Create white point control.
+     * Create white point controller.
      */
     private void createToneMapFilterWhitePointControl(@NotNull final VBox root) {
 
@@ -580,7 +580,7 @@ public class SettingsDialog extends EditorDialog {
     }
 
     /**
-     * Create FXAA control.
+     * Create FXAA controller.
      */
     private void createFXAAControl(@NotNull final VBox root) {
 
@@ -601,7 +601,7 @@ public class SettingsDialog extends EditorDialog {
     }
 
     /**
-     * Create stop render control.
+     * Create stop render controller.
      */
     private void createStopRenderControl(@NotNull final VBox root) {
 
@@ -706,7 +706,7 @@ public class SettingsDialog extends EditorDialog {
     }
 
     /**
-     * Create the anisotropy control
+     * Create the anisotropy controller
      */
     private void createAnisotropyControl(@NotNull final VBox root) {
 
@@ -733,7 +733,7 @@ public class SettingsDialog extends EditorDialog {
     }
 
     /**
-     * Create the theme control
+     * Create the theme controller
      */
     private void createThemeControl(@NotNull final VBox root) {
 
@@ -760,7 +760,7 @@ public class SettingsDialog extends EditorDialog {
     }
 
     /**
-     * Create the open GL control
+     * Create the open GL controller
      */
     private void createOpenGLControl(@NotNull final VBox root) {
 
@@ -787,7 +787,7 @@ public class SettingsDialog extends EditorDialog {
     }
 
     /**
-     * Create the frame rate control.
+     * Create the frame rate controller.
      */
     private void createFrameRateControl(@NotNull final VBox root) {
 
@@ -810,7 +810,7 @@ public class SettingsDialog extends EditorDialog {
     }
 
     /**
-     * Create the camera angle control.
+     * Create the camera angle controller.
      */
     private void createCameraAngleControl(@NotNull final VBox root) {
 

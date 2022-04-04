@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The base implementation of an editing control.
+ * The base implementation of an editing controller.
  *
  * @author JavaSaBr
  */
@@ -130,7 +130,7 @@ public class AbstractEditingControl extends AbstractControl implements EditingCo
     }
 
     /**
-     * Notify about that this control was attached.
+     * Notify about that this controller was attached.
      *
      * @param node the node
      */
@@ -138,7 +138,7 @@ public class AbstractEditingControl extends AbstractControl implements EditingCo
     }
 
     /**
-     * Notify about that this control was detached.
+     * Notify about that this controller was detached.
      *
      * @param node the node
      */

@@ -38,7 +38,7 @@ public class EditorOperationControl {
     private final UndoableEditor editor;
 
     /**
-     * Instantiates a new Editor operation control.
+     * Instantiates a new Editor operation controller.
      *
      * @param editor the editor
      */

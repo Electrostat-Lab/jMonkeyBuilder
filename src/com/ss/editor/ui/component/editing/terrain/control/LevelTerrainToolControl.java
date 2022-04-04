@@ -47,7 +47,7 @@ public class LevelTerrainToolControl extends ChangeHeightTerrainToolControl {
     private boolean precision;
 
     /**
-     * Instantiates a new Level terrain tool control.
+     * Instantiates a new Level terrain tool controller.
      *
      * @param component the component
      */

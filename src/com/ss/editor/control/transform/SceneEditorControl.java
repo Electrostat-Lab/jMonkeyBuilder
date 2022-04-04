@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The interface to implement a control of a scene editor.
+ * The interface to implement a controller of a scene editor.
  *
  * @author JavaSaBr
  */

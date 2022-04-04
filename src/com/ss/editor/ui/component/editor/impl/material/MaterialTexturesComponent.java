@@ -4,7 +4,7 @@ import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.shader.VarType;
 import com.ss.editor.model.undo.EditorOperation;
-import com.ss.editor.ui.control.material.Texture2DMaterialParamControl;
+import com.ss.editor.ui.controller.material.Texture2DMaterialParamControl;
 import com.ss.rlib.ui.util.FXUtils;
 import org.jetbrains.annotations.NotNull;
 

@@ -184,16 +184,15 @@ public class Editor extends JmeToJFXApplication {
 
     @Override
     public void start() {
-
         NativeLibraryLoader.loadNativeLibrary("jinput", true);
         NativeLibraryLoader.loadNativeLibrary("jinput-dx8", true);
 
         super.start();
-
     }
 
     @Override
     public void simpleInitApp() {
+
         renderManager.setPreferredLightMode(TechniqueDef.LightMode.SinglePass);
         renderManager.setSinglePassLightBatchSize(5);
 
@@ -237,17 +236,19 @@ public class Editor extends JmeToJFXApplication {
         postProcessor.initialize(renderManager, viewPort);
 
         fxaaFilter = new FXAAFilter();
-        fxaaFilter.setEnabled(editorConfig.isFXAA());
+        fxaaFilter.setEnabled(false);
         fxaaFilter.setSubPixelShift(1.0f / 4.0f);
         fxaaFilter.setVxOffset(0.0f);
         fxaaFilter.setSpanMax(8.0f);
         fxaaFilter.setReduceMul(1.0f / 8.0f);
 
         toneMapFilter = new ToneMapFilter();
+        toneMapFilter.setEnabled(false);
         toneMapFilter.setWhitePoint(editorConfig.getToneMapFilterWhitePoint());
         toneMapFilter.setEnabled(editorConfig.isToneMapFilter());
 
         translucentBucketFilter = new TonegodTranslucentBucketFilter(true);
+        translucentBucketFilter.setEnabled(false);
 
         postProcessor.addFilter(fxaaFilter);
         postProcessor.addFilter(toneMapFilter);
@@ -255,11 +256,6 @@ public class Editor extends JmeToJFXApplication {
 
         viewPort.addProcessor(postProcessor);
 
-        InitializeManager.register(ResourceManager.class);
-        InitializeManager.register(JavaFXImageManager.class);
-        InitializeManager.register(FileIconManager.class);
-        InitializeManager.register(WorkspaceManager.class);
-        InitializeManager.register(ClasspathManager.class);
         InitializeManager.initialize();
 
         if (Config.ENABLE_PBR) {
@@ -270,23 +266,6 @@ public class Editor extends JmeToJFXApplication {
         }
 
         createProbe();
-
-        ExecutorManager.dispatchJfxThread();
-
-    }
-
-    /**
-     * Lock the render thread for doing actions with game scene.
-     */
-    private long syncLock() {
-        return lock.writeLock();
-    }
-
-    /**
-     * Unlock the render thread.
-     */
-    private void syncUnlock(final long stamp) {
-        lock.unlockWrite(stamp);
     }
 
     @Override
@@ -310,7 +289,6 @@ public class Editor extends JmeToJFXApplication {
         final FXEventManager eventManager = FXEventManager.getInstance();
         eventManager.notify(event);
     }
-
     @Override
     public void simpleUpdate(final float tpf) {
         super.simpleUpdate(tpf);
@@ -322,12 +300,12 @@ public class Editor extends JmeToJFXApplication {
     @Override
     public void update() {
         // update the editor enqueued components before being hooked to jme3 update
-        final long stamp = syncLock();
+        final long stamp = lock.writeLock();
         final GLTaskExecutor editorGLTaskExecutor = GLTaskExecutor.getInstance();
         editorGLTaskExecutor.dispatch();
         // hook up jme3 update --> calls --> simpleUpdate
         super.update();
-        syncUnlock(stamp);
+        lock.unlockWrite(stamp);
         listener.setLocation(cam.getLocation());
         listener.setRotation(cam.getRotation());
     }
@@ -345,29 +323,22 @@ public class Editor extends JmeToJFXApplication {
      * Create the light probe for the PBR render.
      */
     private void createProbe() {
-
         final EnvironmentCamera environmentCamera = getEnvironmentCamera();
         final EnvironmentCamera previewEnvironmentCamera = getPreviewEnvironmentCamera();
-
         if (environmentCamera == null || previewEnvironmentCamera == null) {
             return;
         }
-
         if (environmentCamera.getApplication() == null) {
             final GLTaskExecutor gameGLTaskExecutor = GLTaskExecutor.getInstance();
             gameGLTaskExecutor.addToExecute(this::createProbe);
             return;
         }
-
         lightProbe = makeProbe(environmentCamera, rootNode, EMPTY_JOB_ADAPTER);
         previewLightProbe = makeProbe(previewEnvironmentCamera, previewNode, EMPTY_JOB_ADAPTER);
-
         BoundingSphere bounds = (BoundingSphere) lightProbe.getBounds();
         bounds.setRadius(100);
-
         bounds = (BoundingSphere) previewLightProbe.getBounds();
         bounds.setRadius(100);
-
         rootNode.addLight(lightProbe);
         previewNode.addLight(previewLightProbe);
     }
@@ -378,7 +349,6 @@ public class Editor extends JmeToJFXApplication {
      * @param progressAdapter the progress adapter
      */
     public void updateProbe(final JobProgressAdapter<LightProbe> progressAdapter) {
-
         final LightProbe lightProbe = getLightProbe();
         final EnvironmentCamera environmentCamera = getEnvironmentCamera();
 
@@ -386,7 +356,6 @@ public class Editor extends JmeToJFXApplication {
             progressAdapter.done(null);
             return;
         }
-
         LightProbeFactory.updateProbe(lightProbe, environmentCamera, rootNode, progressAdapter);
     }
 
@@ -396,15 +365,12 @@ public class Editor extends JmeToJFXApplication {
      * @param progressAdapter the progress adapter
      */
     public void updatePreviewProbe(final JobProgressAdapter<LightProbe> progressAdapter) {
-
         final LightProbe lightProbe = getPreviewLightProbe();
         final EnvironmentCamera environmentCamera = getPreviewEnvironmentCamera();
-
         if (lightProbe == null || environmentCamera == null) {
             progressAdapter.done(null);
             return;
         }
-
         LightProbeFactory.updateProbe(lightProbe, environmentCamera, previewNode, progressAdapter);
     }
 

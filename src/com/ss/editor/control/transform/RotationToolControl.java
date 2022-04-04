@@ -28,7 +28,7 @@ import com.ss.rlib.logging.Logger;
 import com.ss.rlib.logging.LoggerManager;
 
 /**
- * The implementation of the rotating control.
+ * The implementation of the rotating controller.
  *
  * @author JavaSaBr
  */
@@ -60,9 +60,9 @@ public class RotationToolControl extends AbstractControl implements TransformCon
     private final Node collisionPlane;
 
     /**
-     * Instantiates a new Rotation tool control.
+     * Instantiates a new Rotation tool controller.
      *
-     * @param editorControl the editor control
+     * @param editorControl the editor controller
      */
     public RotationToolControl(@NotNull final SceneEditorControl editorControl) {
         this.editorControl = editorControl;

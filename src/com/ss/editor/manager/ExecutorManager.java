@@ -63,41 +63,35 @@ public class ExecutorManager {
 
     /**
      * Dispatches a static Gl thread for the editor.
-     *
-     * @return a static instance for the Gl thread.
      */
-    public static EditorThread dispatchGLThread() {
+    public static void dispatchGLThread() {
         if (GL_THREAD == null) {
             synchronized (ExecutorManager.class) {
                 if (GL_THREAD == null) {
                     final JmeToJFXApplication application = Editor.prepareToStart();
-                    final ThreadGroup editorGroup = new ThreadGroup("Editor-Group");
+                    final ThreadGroup editorGroup = new ThreadGroup("GL-Thread-Group");
                     final Runnable startWrapper = application::start;
-                    GL_THREAD = new EditorThread(editorGroup, startWrapper, "GL Render");
+                    GL_THREAD = new EditorThread(editorGroup, startWrapper, "GL-Renderer");
                     GL_THREAD.start();
                 }
             }
         }
-        return GL_THREAD;
     }
 
     /**
      * Dispatches a static jfx thread for the editor.
-     *
-     * @return a static instance for the jfx thread.
      */
-    public static EditorThread dispatchJfxThread() {
+    public static void dispatchJfxThread() {
         if (JFX_THREAD == null) {
             synchronized (ExecutorManager.class) {
                 if (JFX_THREAD == null) {
                     final ThreadGroup editorGroup = new ThreadGroup("JFX-Group");
                     final Runnable startWrapper = JFXApplication::beginUiTransactions;
-                    JFX_THREAD = new EditorThread(editorGroup, startWrapper, "JFX");
+                    JFX_THREAD = new EditorThread(editorGroup, startWrapper, "JFX-MainApplication");
                     JFX_THREAD.start();
                 }
             }
         }
-        return JFX_THREAD;
     }
 
     /**

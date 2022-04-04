@@ -2,7 +2,7 @@ package com.ss.editor.ui.dialog.converter;
 
 import static com.ss.rlib.util.ObjectUtils.notNull;
 import com.ss.editor.Messages;
-import com.ss.editor.ui.control.choose.ChooseFolderControl;
+import com.ss.editor.ui.controller.choose.ChooseFolderControl;
 import com.ss.editor.ui.css.CSSClasses;
 import com.ss.editor.ui.dialog.AbstractSimpleEditorDialog;
 import com.ss.rlib.ui.util.FXUtils;
@@ -42,7 +42,7 @@ public class ModelConverterDialog extends AbstractSimpleEditorDialog {
     private TextField filenameField;
 
     /**
-     * The destination folder control.
+     * The destination folder controller.
      */
     @Nullable
     private ChooseFolderControl destinationControl;
@@ -204,7 +204,7 @@ public class ModelConverterDialog extends AbstractSimpleEditorDialog {
     }
 
     /**
-     * @return the destination folder control.
+     * @return the destination folder controller.
      */
     @NotNull
     private ChooseFolderControl getDestinationControl() {
@@ -222,7 +222,7 @@ public class ModelConverterDialog extends AbstractSimpleEditorDialog {
     }
 
     /**
-     * @return the materials destination folder control.
+     * @return the materials destination folder controller.
      */
     @NotNull
     private ChooseFolderControl getMaterialsFolderControl() {

@@ -50,14 +50,14 @@ import com.ss.editor.ui.component.editor.state.EditorState;
 import com.ss.editor.ui.component.editor.state.impl.AbstractModelFileEditorState;
 import com.ss.editor.ui.component.split.pane.EditorToolSplitPane;
 import com.ss.editor.ui.component.tab.EditorToolComponent;
-import com.ss.editor.ui.control.model.property.ModelPropertyEditor;
-import com.ss.editor.ui.control.model.property.operation.ModelPropertyOperation;
-import com.ss.editor.ui.control.model.tree.ModelNodeTree;
-import com.ss.editor.ui.control.model.tree.action.operation.AddChildOperation;
-import com.ss.editor.ui.control.model.tree.action.operation.RemoveChildOperation;
-import com.ss.editor.ui.control.model.tree.action.operation.RemoveControlOperation;
-import com.ss.editor.ui.control.model.tree.action.operation.RemoveLightOperation;
-import com.ss.editor.ui.control.tree.node.ModelNode;
+import com.ss.editor.ui.controller.model.property.ModelPropertyEditor;
+import com.ss.editor.ui.controller.model.property.operation.ModelPropertyOperation;
+import com.ss.editor.ui.controller.model.tree.ModelNodeTree;
+import com.ss.editor.ui.controller.model.tree.action.operation.AddChildOperation;
+import com.ss.editor.ui.controller.model.tree.action.operation.RemoveChildOperation;
+import com.ss.editor.ui.controller.model.tree.action.operation.RemoveControlOperation;
+import com.ss.editor.ui.controller.model.tree.action.operation.RemoveLightOperation;
+import com.ss.editor.ui.controller.tree.node.ModelNode;
 import com.ss.editor.ui.css.CSSClasses;
 import com.ss.editor.ui.event.impl.FileChangedEvent;
 import com.ss.editor.ui.util.DynamicIconSupport;
@@ -128,7 +128,7 @@ public abstract class AbstractSceneFileEditor<IM extends AbstractSceneFileEditor
     private final StatsAppState statsAppState;
 
     /**
-     * The operation control.
+     * The operation controller.
      */
     @NotNull
     private final EditorOperationControl operationControl;
@@ -753,7 +753,7 @@ public abstract class AbstractSceneFileEditor<IM extends AbstractSceneFileEditor
     }
 
     /**
-     * @return the operation control.
+     * @return the operation controller.
      */
     @NotNull
     private EditorOperationControl getOperationControl() {

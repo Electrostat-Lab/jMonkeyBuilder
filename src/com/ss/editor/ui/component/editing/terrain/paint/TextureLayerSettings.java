@@ -15,7 +15,7 @@ import com.ss.editor.model.undo.editor.ModelChangeConsumer;
 import com.ss.editor.ui.Icons;
 import com.ss.editor.ui.component.editing.terrain.TerrainEditingComponent;
 import com.ss.editor.ui.component.editing.terrain.control.PaintTerrainToolControl;
-import com.ss.editor.ui.control.model.property.operation.ModelPropertyOperation;
+import com.ss.editor.ui.controller.model.property.operation.ModelPropertyOperation;
 import com.ss.editor.ui.css.CSSClasses;
 import com.ss.editor.ui.util.DynamicIconSupport;
 import com.ss.editor.util.NodeUtils;
@@ -30,70 +30,30 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.function.Function;
 
 /**
- * The implementation of texture layer settings.
+ * The Ui component that adds/removes the texture layers for the terrain.
  *
- * @author JavaSaBr
+ * @author JavaSaBr.
+ * @author pavl_g.
  */
 public class TextureLayerSettings extends VBox {
 
     private static final double CELL_SIZE = 108;
+    private int maxLevels;
 
-    /**
-     * The list of cells.
-     */
-    @NotNull
-    private final Array<TextureLayerCell> cells;
-
-    /**
-     * The editing component.
-     */
-    @NotNull
     private final TerrainEditingComponent editingComponent;
 
-    /**
-     * The function to convert layer index to diffuse texture param name.
-     */
-    @Nullable
     private Function<Integer, String> layerToDiffuseName;
-
-    /**
-     * The function to convert layer index to normal texture param name.
-     */
-    @Nullable
     private Function<Integer, String> layerToNormalName;
-
-    /**
-     * The function to convert layer index to texture scale param name.
-     */
-    @Nullable
     private Function<Integer, String> layerToScaleName;
-
-    /**
-     * The function to convert layer index to alpha texture param name.
-     */
-    @Nullable
     private Function<Integer, String> layerToAlphaName;
 
-    /**
-     * The list of layers.
-     */
-    @Nullable
     private ListView<TextureLayer> listView;
-
-    /**
-     * The button to add a new layer.
-     */
-    @Nullable
+    private final Array<TextureLayerCell> cells;
     private Button addButton;
 
-    /**
-     * The max count of texture levels.
-     */
-    private int maxLevels;
 
     /**
      * Instantiates a new Texture layer settings.
@@ -157,7 +117,6 @@ public class TextureLayerSettings extends VBox {
 
     @NotNull
     private ListCell<TextureLayer> newCell() {
-
         final DoubleBinding width = widthProperty().subtract(4D);
         final TextureLayerCell cell = new TextureLayerCell(width, width);
 
@@ -191,7 +150,13 @@ public class TextureLayerSettings extends VBox {
         final ListView<TextureLayer> listView = getListView();
         final MultipleSelectionModel<TextureLayer> selectionModel = listView.getSelectionModel();
         final TextureLayer textureLayer = selectionModel.getSelectedItem();
-
+        // exclude layer 0 (basic texture layer).
+        if (textureLayer.getLayer() == 0) {
+            return;
+        }
+        // removing the material parameters
+        setDiffuse(null, textureLayer.getLayer());
+        setNormal(null, textureLayer.getLayer());
         setTextureScale(-1F, textureLayer.getLayer());
     }
 
@@ -280,32 +245,21 @@ public class TextureLayerSettings extends VBox {
     }
 
     /**
-     * Refresh the layers list.
+     * Refresh the layers list after deleting a layer.
      */
     @FXThread
     public void refresh() {
 
         final ListView<TextureLayer> listView = getListView();
-        final MultipleSelectionModel<TextureLayer> selectionModel = listView.getSelectionModel();
-        final TextureLayer selectedItem = selectionModel.getSelectedItem();
-
         final ObservableList<TextureLayer> items = listView.getItems();
         items.clear();
 
-        final int maxLevels = getMaxLevels() - 1;
-
-        for (int i = 0; i < maxLevels; i++) {
-
-            final float scale = getTextureScale(i);
-            if (scale == -1F) continue;
-
+        for (int i = 0; i < getMaxLevels() - 1; i++) {
+            // the order to not to update the deleted textures
+            if (isInvalid(i)) {
+                continue;
+            }
             items.add(new TextureLayer(this, i));
-        }
-
-        if (items.contains(selectedItem)) {
-            selectionModel.select(selectedItem);
-        } else if (!items.isEmpty()) {
-            selectionModel.select(items.get(0));
         }
 
         final ExecutorManager executorManager = ExecutorManager.getInstance();
@@ -423,7 +377,9 @@ public class TextureLayerSettings extends VBox {
 
         final Material material = geometry.getMaterial();
         final MatParam matParam = material.getParam(paramName);
-        if (matParam == null && texture == null) return;
+        if (matParam == null && texture == null) {
+            return;
+        }
 
         if (texture == null) {
             material.clearParam(matParam.getName());
@@ -530,13 +486,7 @@ public class TextureLayerSettings extends VBox {
         operation.setApplyHandler((node, newScale) -> {
             NodeUtils.visitGeometry(getTerrainNode(), geometry -> {
                 final Material geometryMaterial = geometry.getMaterial();
-                final MatParam param = geometryMaterial.getParam(paramName);
-                if (param == null && (newScale == null || newScale == -1F)) return;
-                if (newScale == null || newScale == -1F) {
-                    geometryMaterial.clearParam(paramName);
-                } else {
-                    geometryMaterial.setFloat(paramName, newScale);
-                }
+                geometryMaterial.setFloat(paramName, newScale);
             });
         });
 
@@ -609,20 +559,31 @@ public class TextureLayerSettings extends VBox {
 
         final ListView<TextureLayer> listView = getListView();
         final ObservableList<TextureLayer> items = listView.getItems();
+        int validLayers = 0;
 
-        final int maxLevels = getMaxLevels() - 1;
-        int newCount = 0;
-
-        for (int i = 0; i < maxLevels; i++) {
-            final float scale = getTextureScale(i);
-            if (scale == -1F) continue;
-            newCount++;
+        for (int i = 0; i < getMaxLevels() - 1; i++) {
+            if (isInvalid(i)) {
+                continue;
+            }
+            validLayers++;
         }
 
-        if (newCount != items.size()) {
+        if (validLayers != items.size()) {
             refresh();
         } else {
-            getCells().forEach(TextureLayerCell::refresh);
+            for (final TextureLayerCell cell: getCells()) {
+                cell.refresh();
+            }
         }
+    }
+
+    /**
+     * Tests whether the layer is invalid.
+     *
+     * @param layerIndex the layer index.
+     * @return true if the layer is not valid.
+     */
+    private boolean isInvalid(final int layerIndex) {
+        return getTextureScale(layerIndex) == -1F && getDiffuse(layerIndex) == null;
     }
 }

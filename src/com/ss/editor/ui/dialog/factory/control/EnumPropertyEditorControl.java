@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The control to edit enum values.
+ * The controller to edit enum values.
  *
  * @author JavaSaBr
  */

@@ -246,7 +246,7 @@ public abstract class AbstractFileEditor<R extends Pane> implements FileEditor {
      *
      * @param keyCode            the key code.
      * @param isPressed          true if key is pressed.
-     * @param isControlDown      true if control is down.
+     * @param isControlDown      true if controller is down.
      * @param isButtonMiddleDown true if mouse middle button is pressed.
      */
     @FromAnyThread
@@ -260,7 +260,7 @@ public abstract class AbstractFileEditor<R extends Pane> implements FileEditor {
      *
      * @param keyCode            the key code.
      * @param isPressed          true if key is pressed.
-     * @param isControlDown      true if control is down.
+     * @param isControlDown      true if controller is down.
      * @param isButtonMiddleDown true if mouse middle button is pressed.
      * @return true if can consume an event.
      */

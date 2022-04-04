@@ -36,7 +36,6 @@ import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.debug.WireSphere;
 import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.Quad;
-import com.ss.editor.Launcher;
 import com.ss.editor.annotation.JMEThread;
 import com.ss.editor.annotation.FromAnyThread;
 import com.ss.editor.control.editing.EditingControl;
@@ -48,7 +47,7 @@ import com.ss.editor.scene.EditorAudioNode;
 import com.ss.editor.scene.EditorLightNode;
 import com.ss.editor.state.editor.impl.AdvancedAbstractEditorAppState;
 import com.ss.editor.ui.component.editor.impl.scene.AbstractSceneFileEditor;
-import com.ss.editor.ui.control.model.property.operation.ModelPropertyOperation;
+import com.ss.editor.ui.controller.model.property.operation.ModelPropertyOperation;
 import com.ss.editor.util.EditingUtils;
 import com.ss.editor.util.EditorUtil;
 import com.ss.editor.util.GeomUtils;
@@ -796,6 +795,7 @@ public abstract class AbstractSceneEditorAppState<T extends AbstractSceneFileEdi
         final Node cursorNode = getCursorNode();
         final EditingControl control = EditingUtils.getEditingControl(cursorNode);
         final Spatial editedModel = EditingUtils.getEditedModel(control);
+
         if (editedModel == null) return;
 
         final Vector3f contactPoint = GeomUtils.getContactPointFromCursor(editedModel);

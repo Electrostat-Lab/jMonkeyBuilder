@@ -8,7 +8,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.terrain.Terrain;
 import com.ss.editor.model.undo.editor.ModelChangeConsumer;
 import com.ss.editor.ui.component.editing.terrain.TerrainEditingComponent;
-import com.ss.editor.ui.control.model.property.operation.ModelPropertyOperation;
+import com.ss.editor.ui.controller.model.property.operation.ModelPropertyOperation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.ss.rlib.util.dictionary.DictionaryFactory;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The base implementation of tool control to change height of terrain.
+ * The base implementation of tool controller to change height of terrain.
  *
  * @author JavaSaBr
  */
@@ -77,7 +77,7 @@ public class ChangeHeightTerrainToolControl extends TerrainToolControl {
     private Spatial copiedTerrain;
 
     /**
-     * Instantiates a new Change height terrain tool control.
+     * Instantiates a new Change height terrain tool controller.
      *
      * @param component the component
      */

@@ -696,7 +696,7 @@ public class Image extends NativeObject implements Savable /*, Cloneable*/ {
      * @param data        the image data.
      * @param mipMapSizes the array of mipmap sizes, or null for no mipmaps.
      * @param colorSpace  the color space
-     * @see ColorSpacethe colorSpace of the image
+     * @see ColorSpace the colorSpace of the image
      */
     public Image(Format format, int width, int height, int depth, ArrayList<ByteBuffer> data,
                  int[] mipMapSizes, ColorSpace colorSpace) {

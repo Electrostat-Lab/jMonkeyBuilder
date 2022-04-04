@@ -481,7 +481,7 @@ public class EditorCamera implements ActionListener, AnalogListener, Control {
             if (canRotate) {
                 //reseting the trailing lerp factor
                 trailingLerpFactor = 0;
-                //stop trailing user has the control
+                //stop trailing user has the controller
                 trailing = false;
             }
 
@@ -621,7 +621,7 @@ public class EditorCamera implements ActionListener, AnalogListener, Control {
     }
 
     /**
-     * Sets the spacial for the camera control, should only be used internally
+     * Sets the spacial for the camera controller, should only be used internally
      */
     public void setSpatial(Spatial spatial) {
         target = spatial;
@@ -635,14 +635,14 @@ public class EditorCamera implements ActionListener, AnalogListener, Control {
     }
 
     /**
-     * update the camera control, should only be used internally
+     * update the camera controller, should only be used internally
      */
     public void update(float tpf) {
         updateCamera(tpf);
     }
 
     /**
-     * renders the camera control, should only be used internally
+     * renders the camera controller, should only be used internally
      */
     public void render(RenderManager rm, ViewPort vp) {
         //nothing to render

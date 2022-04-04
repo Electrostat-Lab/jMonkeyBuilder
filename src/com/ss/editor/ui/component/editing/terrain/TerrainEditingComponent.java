@@ -17,8 +17,8 @@ import com.ss.editor.ui.component.editing.EditingComponent;
 import com.ss.editor.ui.component.editing.EditingComponentContainer;
 import com.ss.editor.ui.component.editing.terrain.control.*;
 import com.ss.editor.ui.component.editing.terrain.paint.TextureLayerSettings;
-import com.ss.editor.ui.control.model.property.operation.ModelPropertyOperation;
-import com.ss.editor.ui.control.property.AbstractPropertyControl;
+import com.ss.editor.ui.controller.model.property.operation.ModelPropertyOperation;
+import com.ss.editor.ui.controller.property.AbstractPropertyControl;
 import com.ss.editor.ui.css.CSSClasses;
 import com.ss.editor.util.NodeUtils;
 import com.ss.rlib.ui.control.input.FloatTextField;
@@ -45,7 +45,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Function;
 
 /**
- * The implementation of a terrain editor.
+ * The Terrain editor updater.
  *
  * @author JavaSaBr
  */
@@ -68,7 +68,8 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     public static final String TERRAIN_PARAM = "terrainParam";
 
     @NotNull
-    private static final Function<Integer, String> LAYER_TO_SCALE_NAME = layer -> "DiffuseMap_" + layer + "_scale";
+    private static final Function<Integer, String> LAYER_TO_SCALE_NAME = layer ->
+            "DiffuseMap_" + layer + "_scale";
 
     @NotNull
     private static final Function<Integer, String> LAYER_TO_ALPHA_NAME = layer -> {
@@ -117,7 +118,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     private final Array<ToggleButton> toggleButtons;
 
     /**
-     * The map with mapping toggle button to terrain control.
+     * The map with mapping toggle button to terrain controller.
      */
     @NotNull
     private final ObjectDictionary<ToggleButton, TerrainToolControl> buttonToControl;
@@ -129,37 +130,37 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     private final ObjectDictionary<ToggleButton, Pane> buttonToSettings;
 
     /**
-     * The control to raise/lowe terrain.
+     * The controller to raise/lowe terrain.
      */
     @NotNull
     private final RaiseLowerTerrainToolControl raiseLowerToolControl;
 
     /**
-     * The control to smooth terrain.
+     * The controller to smooth terrain.
      */
     @NotNull
     private final SmoothTerrainToolControl smoothToolControl;
 
     /**
-     * The control to make rough surface terrain.
+     * The controller to make rough surface terrain.
      */
     @NotNull
     private final RoughTerrainToolControl roughToolControl;
 
     /**
-     * The control to make some levels terrain.
+     * The controller to make some levels terrain.
      */
     @NotNull
     private final LevelTerrainToolControl levelToolControl;
 
     /**
-     * The control to make slopes on terrain.
+     * The controller to make slopes on terrain.
      */
     @NotNull
     private final SlopeTerrainToolControl slopeToolControl;
 
     /**
-     * The control to paint on terrain.
+     * The controller to paint on terrain.
      */
     @NotNull
     private final PaintTerrainToolControl paintToolControl;
@@ -213,13 +214,13 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     private FloatTextField brushPowerField;
 
     /**
-     * The container of control settings.
+     * The container of controller settings.
      */
     @Nullable
     private VBox controlSettings;
 
     /**
-     * The settings of level control.
+     * The settings of level controller.
      */
     @Nullable
     private GridPane levelControlSettings;
@@ -243,7 +244,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     private FloatTextField levelControlLevelField;
 
     /**
-     * The settings of rough control.
+     * The settings of rough controller.
      */
     @Nullable
     private GridPane roughControlSettings;
@@ -279,7 +280,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     private FloatTextField roughControlScaleField;
 
     /**
-     * The settings of slope control.
+     * The settings of slope controller.
      */
     @Nullable
     private GridPane slopeControlSettings;
@@ -297,7 +298,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     private CheckBox slopeControlLimited;
 
     /**
-     * The settings of painting control.
+     * The settings of painting controller.
      */
     @Nullable
     private GridPane paintControlSettings;
@@ -321,7 +322,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     private FloatTextField shininessField;
 
     /**
-     * The current tool control.
+     * The current tool controller.
      */
     @Nullable
     private TerrainToolControl toolControl;
@@ -401,7 +402,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * @return the map with mapping toggle button to terrain control.
+     * @return the map with mapping toggle button to terrain controller.
      */
     @NotNull
     private ObjectDictionary<ToggleButton, TerrainToolControl> getButtonToControl() {
@@ -417,7 +418,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * @return the current tool control.
+     * @return the current tool controller.
      */
     @Nullable
     private TerrainToolControl getToolControl() {
@@ -425,14 +426,14 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * @param toolControl the current tool control.
+     * @param toolControl the current tool controller.
      */
     private void setToolControl(@Nullable final TerrainToolControl toolControl) {
         this.toolControl = toolControl;
     }
 
     /**
-     * @return the container of control settings.
+     * @return the container of controller settings.
      */
     @NotNull
     private VBox getControlSettings() {
@@ -583,7 +584,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * Create settings of slope control.
+     * Create settings of slope controller.
      */
     private void createSlopeControlSettings() {
 
@@ -613,7 +614,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * Create settings of level control.
+     * Create settings of level controller.
      */
     private void createLevelControlSettings() {
 
@@ -657,7 +658,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * Create settings of rough control.
+     * Create settings of rough controller.
      */
     private void createRoughControlSettings() {
 
@@ -723,7 +724,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * Create settings of paint control.
+     * Create settings of paint controller.
      */
     private void createPaintControlSettings() {
 
@@ -758,7 +759,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * @return the control to make some levels terrain.
+     * @return the controller to make some levels terrain.
      */
     @NotNull
     private LevelTerrainToolControl getLevelToolControl() {
@@ -766,7 +767,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * @return the control to make slopes on terrain.
+     * @return the controller to make slopes on terrain.
      */
     @NotNull
     private SlopeTerrainToolControl getSlopeToolControl() {
@@ -774,7 +775,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * @return the control to make rough surface terrain.
+     * @return the controller to make rough surface terrain.
      */
     @NotNull
     private RoughTerrainToolControl getRoughToolControl() {
@@ -782,9 +783,9 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * Gets paint tool control.
+     * Gets paint tool controller.
      *
-     * @return the control to paint textures.
+     * @return the controller to paint textures.
      */
     @NotNull
     public PaintTerrainToolControl getPaintToolControl() {
@@ -849,7 +850,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * Change using marker for level control.
+     * Change using marker for level controller.
      */
     @FromAnyThread
     private void changeLevelControlUseMarker(@NotNull final Boolean newValue) {
@@ -857,7 +858,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * Change a level of a level control.
+     * Change a level of a level controller.
      */
     @FromAnyThread
     private void changeLevelControlLevel(@NotNull final Float newLevel) {
@@ -881,7 +882,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * Change scale of a rough control.
+     * Change scale of a rough controller.
      */
     @FromAnyThread
     private void changeRoughControlScale(@NotNull final Float newScale) {
@@ -889,7 +890,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * Change frequency of a rough control.
+     * Change frequency of a rough controller.
      */
     @FromAnyThread
     private void changeRoughControlFrequency(@NotNull final Float newFrequency) {
@@ -897,7 +898,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * Change lacunarity of a rough control.
+     * Change lacunarity of a rough controller.
      */
     @FromAnyThread
     private void changeRoughControlLacunarity(@NotNull final Float newLacunarity) {
@@ -905,7 +906,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * Change octaves of a rough control.
+     * Change octaves of a rough controller.
      */
     @FromAnyThread
     private void changeRoughControlOctaves(@NotNull final Float newOctaves) {
@@ -913,7 +914,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * Change roughness of a rough control.
+     * Change roughness of a rough controller.
      */
     @FromAnyThread
     private void changeRoughControlRoughness(@NotNull final Float newRoughness) {
@@ -1043,7 +1044,7 @@ public class TerrainEditingComponent extends AbstractProcessingComponent<Terrain
     }
 
     /**
-     * @return the settings of painting control.
+     * @return the settings of painting controller.
      */
     @NotNull
     private TextureLayerSettings getTextureLayerSettings() {

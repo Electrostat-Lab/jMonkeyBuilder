@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The control to edit float values.
+ * The controller to edit float values.
  *
  * @author JavaSaBr
  */
