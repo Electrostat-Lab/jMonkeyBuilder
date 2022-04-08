@@ -654,13 +654,13 @@ public class CreateTerrainDialog extends AbstractSimpleEditorDialog {
         super.processOk();
         EditorUtil.incrementLoading();
         EXECUTOR_MANAGER.addBackgroundTask(() -> {
-
-            try {
-                createTerrainInBackground();
-            } catch (final Exception e) {
-                EditorUtil.handleException(LOGGER, this, e);
-            }
-
+                EDITOR.enqueue(() -> {
+                    try {
+                        createTerrainInBackground();
+                    } catch (Exception e) {
+                        EditorUtil.handleException(LOGGER, this, e);
+                    }
+                });
             EXECUTOR_MANAGER.addFXTask(EditorUtil::decrementLoading);
         });
     }

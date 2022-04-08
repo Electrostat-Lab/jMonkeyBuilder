@@ -24,6 +24,7 @@ import com.ss.editor.ui.css.CSSIds;
 import com.ss.editor.ui.event.FXEventManager;
 import com.ss.editor.ui.event.impl.*;
 import com.ss.editor.ui.scene.EditorFXScene;
+import com.ss.editor.util.EditorStateManager;
 import com.ss.editor.util.EditorUtil;
 import com.ss.rlib.concurrent.util.ThreadUtils;
 import com.ss.rlib.logging.Logger;
@@ -132,7 +133,7 @@ public class EditorAreaComponent extends TabPane implements ScreenComponent {
 
                 final ObservableMap<Object, Object> properties = newValue.getProperties();
                 final FileEditor fileEditor = (FileEditor) properties.get(KEY_EDITOR);
-                fileEditor.notifyShowed();
+                fileEditor.onShown();
 
                 newCurrentFile = fileEditor.getEditFile();
             }
@@ -140,7 +141,7 @@ public class EditorAreaComponent extends TabPane implements ScreenComponent {
             if (oldValue != null) {
                 final ObservableMap<Object, Object> properties = oldValue.getProperties();
                 final FileEditor fileEditor = (FileEditor) properties.get(KEY_EDITOR);
-                fileEditor.notifyHided();
+                fileEditor.onDismissed();
             }
 
             final Workspace workspace = Objects.requireNonNull(WORKSPACE_MANAGER.getCurrentWorkspace(),
@@ -204,7 +205,7 @@ public class EditorAreaComponent extends TabPane implements ScreenComponent {
 
         final ObservableMap<Object, Object> properties = tab.getProperties();
         final FileEditor fileEditor = (FileEditor) properties.get(KEY_EDITOR);
-        fileEditor.notifyRenamed(prevFile, newFile);
+        fileEditor.onRenamed(prevFile, newFile);
 
         final Path editFile = fileEditor.getEditFile();
         if (!editFile.equals(newFile)) return;
@@ -239,7 +240,7 @@ public class EditorAreaComponent extends TabPane implements ScreenComponent {
 
             final ObservableMap<Object, Object> properties = tab.getProperties();
             final FileEditor fileEditor = (FileEditor) properties.get(KEY_EDITOR);
-            fileEditor.notifyMoved(prevFile, newFile);
+            fileEditor.onMoved(prevFile, newFile);
 
             final Path editFile = fileEditor.getEditFile();
             if (!editFile.equals(newFile)) return;
@@ -306,7 +307,7 @@ public class EditorAreaComponent extends TabPane implements ScreenComponent {
 
             DictionaryUtils.runInWriteLock(getOpenedEditors(), editFile, ObjectDictionary::remove);
 
-            fileEditor.notifyClosed();
+            fileEditor.onClosed();
 
             if (isIgnoreOpenedFiles()) return;
 
@@ -419,23 +420,22 @@ public class EditorAreaComponent extends TabPane implements ScreenComponent {
 
         final FileEditor resultEditor = editor;
 
-        final long stamp = EDITOR.asyncLock();
+        EditorStateManager.setOpeningFile();
         try {
             editor.openFile(file);
         } catch (final NoClassDefFoundError | Exception e) {
             EditorUtil.handleException(null, this, new Exception(e));
             EXECUTOR_MANAGER.addFXTask(() -> {
                 scene.decrementLoading();
-                resultEditor.notifyClosed();
+                resultEditor.onClosed();
             });
             return;
         } finally {
-            EDITOR.asyncUnlock(stamp);
+            EditorStateManager.setUpdating();
         }
 
         EXECUTOR_MANAGER.addFXTask(() -> addEditor(resultEditor, event.isNeedShow()));
     }
-
     /**
      * Add and open new editor.
      *

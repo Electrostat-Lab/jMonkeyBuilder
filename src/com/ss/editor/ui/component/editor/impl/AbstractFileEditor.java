@@ -19,6 +19,7 @@ import com.ss.editor.ui.event.FXEventManager;
 import com.ss.editor.ui.event.impl.FileChangedEvent;
 import com.ss.editor.ui.scene.EditorFXScene;
 import com.ss.editor.ui.util.DynamicIconSupport;
+import com.ss.editor.util.EditorStateManager;
 import com.ss.rlib.logging.Logger;
 import com.ss.rlib.logging.LoggerManager;
 import com.ss.rlib.ui.util.FXUtils;
@@ -40,7 +41,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -50,94 +50,24 @@ import java.time.LocalTime;
  *
  * @param <R> the type parameter
  * @author JavaSaBr
+ * @author pavl_g
  */
 public abstract class AbstractFileEditor<R extends Pane> implements FileEditor {
 
-    /**
-     * The constant LOGGER.
-     */
-    @NotNull
     protected static final Logger LOGGER = LoggerManager.getLogger(FileEditor.class);
-
-    /**
-     * The constant EXECUTOR_MANAGER.
-     */
-    @NotNull
     protected static final ExecutorManager EXECUTOR_MANAGER = ExecutorManager.getInstance();
-
-    /**
-     * The constant FX_EVENT_MANAGER.
-     */
-    @NotNull
     protected static final FXEventManager FX_EVENT_MANAGER = FXEventManager.getInstance();
-
-    /**
-     * The constant JFX_APPLICATION.
-     */
-    @NotNull
     protected static final JFXApplication JFX_APPLICATION = JFXApplication.getInstance();
-
-    /**
-     * The constant EDITOR.
-     */
-    @NotNull
     protected static final Editor EDITOR = Editor.getInstance();
-
-    /**
-     * The array of 3D parts of this editor.
-     */
-    @NotNull
     private final Array<EditorAppState> editorStates;
-
-    /**
-     * The file changes listener.
-     */
-    @NotNull
     private final EventHandler<Event> fileChangedHandler;
-
-    /**
-     * The dirty property.
-     */
-    @NotNull
     private final BooleanProperty dirtyProperty;
-
-    /**
-     * The time when this editor was showed.
-     */
-    @NotNull
     private volatile LocalTime showedTime;
-
-    /**
-     * The root element of this editor.
-     */
-    @Nullable
     private R root;
-
-    /**
-     * The edited file.
-     */
-    @Nullable
     private Path file;
-
-    /**
-     * Is left button pressed.
-     */
     private boolean buttonLeftDown;
-
-    /**
-     * Is right button pressed.
-     */
     private boolean buttonRightDown;
-
-    /**
-     * Is middle button pressed.
-     */
     private boolean buttonMiddleDown;
-
-    /**
-     * The flag of saving process.
-     */
-    private boolean saving;
 
     /**
      * Instantiates a new Abstract file editor.
@@ -314,12 +244,14 @@ public abstract class AbstractFileEditor<R extends Pane> implements FileEditor {
      */
     @FXThread
     protected void processSave() {
-        final long stamp = EDITOR.asyncLock();
-        try {
-            doSave();
-        } finally {
-            EDITOR.asyncUnlock(stamp);
-        }
+        doSave();
+    }
+
+    @Override
+    public void onSaved() {
+        EditorStateManager.setUpdating();
+        final EditorFXScene scene = JFX_APPLICATION.getScene();
+        scene.decrementLoading();
     }
 
     /**
@@ -410,12 +342,12 @@ public abstract class AbstractFileEditor<R extends Pane> implements FileEditor {
     }
 
     @Override
-    public void notifyRenamed(@NotNull final Path prevFile, @NotNull final Path newFile) {
+    public void onRenamed(@NotNull final Path prevFile, @NotNull final Path newFile) {
         notifyChangedEditedFile(prevFile, newFile);
     }
 
     @Override
-    public void notifyMoved(@NotNull final Path prevFile, final @NotNull Path newFile) {
+    public void onMoved(@NotNull final Path prevFile, final @NotNull Path newFile) {
         notifyChangedEditedFile(prevFile, newFile);
     }
 
@@ -457,7 +389,7 @@ public abstract class AbstractFileEditor<R extends Pane> implements FileEditor {
     }
 
     @Override
-    public void notifyShowed() {
+    public void onShown() {
         this.showedTime = LocalTime.now();
 
         final EditorDescription description = getDescription();
@@ -465,7 +397,7 @@ public abstract class AbstractFileEditor<R extends Pane> implements FileEditor {
     }
 
     @Override
-    public void notifyHided() {
+    public void onDismissed() {
 
         final Duration duration = Duration.between(showedTime, LocalTime.now());
         final int seconds = (int) duration.getSeconds();
@@ -477,19 +409,8 @@ public abstract class AbstractFileEditor<R extends Pane> implements FileEditor {
     }
 
     @Override
-    public void notifyClosed() {
+    public void onClosed() {
         FX_EVENT_MANAGER.removeEventHandler(FileChangedEvent.EVENT_TYPE, getFileChangedHandler());
-
-        final Duration duration = Duration.between(showedTime, LocalTime.now());
-        final int seconds = (int) duration.getSeconds();
-
-        final EditorDescription description = getDescription();
-
-        GAnalytics.sendEvent(GAEvent.Category.EDITOR, GAEvent.Action.EDITOR_CLOSED,
-                description.getEditorId() + "/" + getFileName());
-
-        GAnalytics.sendTiming(GAEvent.Category.EDITOR, GAEvent.Label.WORKING_ON_AN_EDITOR,
-                seconds, description.getEditorId());
     }
 
     /**
@@ -506,8 +427,8 @@ public abstract class AbstractFileEditor<R extends Pane> implements FileEditor {
             return;
         }
 
-        if (isSaving()) {
-            notifyFinishSaving();
+        if (EditorStateManager.isSaving()) {
+            onSaved();
             return;
         }
 
@@ -591,44 +512,10 @@ public abstract class AbstractFileEditor<R extends Pane> implements FileEditor {
         return buttonRightDown;
     }
 
-    /**
-     * Is saving boolean.
-     *
-     * @return the boolean
-     */
-    protected boolean isSaving() {
-        return saving;
-    }
-
-    /**
-     * Sets saving.
-     *
-     * @param saving the saving
-     */
-    protected void setSaving(final boolean saving) {
-        this.saving = saving;
-    }
-
     @Override
     public void doSave() {
-        notifyStartSaving();
-    }
-
-    /**
-     * Notify start saving.
-     */
-    protected void notifyStartSaving() {
         final EditorFXScene scene = JFX_APPLICATION.getScene();
         scene.incrementLoading();
-        setSaving(true);
-    }
-
-    /**
-     * Notify finish saving.
-     */
-    protected void notifyFinishSaving() {
-        setSaving(false);
-        final EditorFXScene scene = JFX_APPLICATION.getScene();
-        scene.decrementLoading();
+        EditorStateManager.setSaving();
     }
 }

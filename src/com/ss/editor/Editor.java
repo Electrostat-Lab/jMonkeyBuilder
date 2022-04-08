@@ -29,6 +29,7 @@ import com.ss.editor.extension.loader.SceneLoader;
 import com.ss.editor.manager.*;
 import com.ss.editor.ui.event.FXEventManager;
 import com.ss.editor.ui.event.impl.WindowChangeFocusEvent;
+import com.ss.editor.util.EditorStateManager;
 import com.ss.rlib.logging.Logger;
 import com.ss.rlib.logging.LoggerLevel;
 import com.ss.rlib.logging.LoggerManager;
@@ -38,7 +39,6 @@ import jme3_ext_xbuf.XbufLoader;
 import tonegod.emitter.filter.TonegodTranslucentBucketFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.locks.StampedLock;
 import java.util.logging.Level;
 import static com.jme3.environment.LightProbeFactory.makeProbe;
 import static com.ss.rlib.util.ObjectUtils.notNull;
@@ -53,10 +53,6 @@ import static java.nio.file.Files.createDirectories;
  */
 public class Editor extends JmeToJFXApplication {
 
-    /**
-     * The main synchronizer of this application.
-     */
-    private final StampedLock lock;
     private final Node previewNode;
     private ViewPort previewViewPort;
     private Camera previewCamera;
@@ -82,7 +78,6 @@ public class Editor extends JmeToJFXApplication {
     };
 
     private Editor() {
-        this.lock = new StampedLock();
         this.previewNode = new Node("Preview Node");
     }
 
@@ -147,24 +142,6 @@ public class Editor extends JmeToJFXApplication {
         }
 
         LoggerManager.addListener(new FolderFileListener(logFolder));
-    }
-
-    /**
-     * Lock the render thread for other actions.
-     *
-     * @return the long
-     */
-    public final long asyncLock() {
-        return lock.readLock();
-    }
-
-    /**
-     * Unlock the render thread.
-     *
-     * @param stamp the stamp
-     */
-    public final void asyncUnlock(final long stamp) {
-        lock.unlockRead(stamp);
     }
 
     @Override
@@ -299,13 +276,15 @@ public class Editor extends JmeToJFXApplication {
 
     @Override
     public void update() {
+        // finish if the editor state isn't for updating the scene
+        if (!EditorStateManager.isUpdating()) {
+            return;
+        }
         // update the editor enqueued components before being hooked to jme3 update
-        final long stamp = lock.writeLock();
         final GLTaskExecutor editorGLTaskExecutor = GLTaskExecutor.getInstance();
         editorGLTaskExecutor.dispatch();
         // hook up jme3 update --> calls --> simpleUpdate
         super.update();
-        lock.unlockWrite(stamp);
         listener.setLocation(cam.getLocation());
         listener.setRotation(cam.getRotation());
     }
