@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+}
+String engineVersion = "3.5.1-stable"
+group 'org.scrappers'
+version '1.0-RM-VERSION'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jcenter.bintray.com' } // for SimMath
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    implementation 'org.jetbrains:annotations:16.0.2'
+    /* local dependencies */
+    implementation fileTree(dir: "libs", include: ["*.jar", "*.so"])
+    implementation fileTree(dir: "libs/extensions", include: ["*.jar", "*.so"])
+    implementation fileTree(dir: "libs/extensions/simsilica", include: ["*.jar", "*.so"])
+    implementation fileTree(dir: "libs/extensions/toneg0d", include: ["*.jar", "*.so"])
+    implementation fileTree(dir: "libs/extensions/xbuf", include: ["*.jar", "*.so"])
+    implementation fileTree(dir: "libs/http", include: ["*.jar", "*.so"])
+    implementation fileTree(dir: "libs/svg", include: ["*.jar", "*.so"])
+
+    /* remote dependencies */
+    implementation "org.jmonkeyengine:jme3-core:$engineVersion"
+    implementation "org.jmonkeyengine:jme3-desktop:$engineVersion"
+    implementation "org.jmonkeyengine:jme3-effects:$engineVersion"
+    implementation "org.jmonkeyengine:jme3-terrain:$engineVersion"
+    implementation "org.jmonkeyengine:jme3-lwjgl3:$engineVersion"
+    implementation "org.jmonkeyengine:jme3-plugins:$engineVersion"
+
+}
+
+test {
+    useJUnitPlatform()
+}

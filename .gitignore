@@ -1,0 +1,7 @@
+/.idea
+/bin/
+*.so
+*.log
+/build-gradle/
+/.gradle/
+/src-tests
