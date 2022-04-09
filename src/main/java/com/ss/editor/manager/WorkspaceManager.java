@@ -1,19 +1,19 @@
 package com.ss.editor.manager;
 
-import static java.util.Objects.requireNonNull;
-import static com.ss.rlib.util.Utils.get;
 import com.ss.editor.annotation.FromAnyThread;
 import com.ss.editor.config.EditorConfig;
 import com.ss.editor.model.workspace.Workspace;
 import com.ss.editor.util.EditorUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import com.ss.rlib.manager.InitializeManager;
 import com.ss.rlib.util.dictionary.DictionaryFactory;
 import com.ss.rlib.util.dictionary.ObjectDictionary;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import static com.ss.rlib.util.Utils.get;
+import static java.util.Objects.requireNonNull;
 
 /**
  * The class to manage workspaces.
@@ -55,7 +55,6 @@ public class WorkspaceManager {
     private final ObjectDictionary<Path, Workspace> workspaces;
 
     private WorkspaceManager() {
-        InitializeManager.valid(getClass());
         this.workspaces = DictionaryFactory.newObjectDictionary();
     }
 

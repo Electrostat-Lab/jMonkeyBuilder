@@ -35,6 +35,7 @@ import com.ss.rlib.logging.Logger;
 import com.ss.rlib.logging.LoggerLevel;
 import com.ss.rlib.logging.LoggerManager;
 import com.ss.rlib.logging.impl.FolderFileListener;
+import com.ss.rlib.manager.InitializeManager;
 import jme3_ext_xbuf.XbufLoader;
 import tonegod.emitter.filter.TonegodTranslucentBucketFilter;
 
@@ -171,6 +172,7 @@ public class Editor extends JmeToJFXApplication {
 
     @Override
     public void simpleInitApp() {
+        InitializeManager.initialize();
 
         renderManager.setPreferredLightMode(TechniqueDef.LightMode.SinglePass);
         renderManager.setSinglePassLightBatchSize(5);

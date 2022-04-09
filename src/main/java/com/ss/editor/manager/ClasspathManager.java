@@ -1,12 +1,10 @@
 package com.ss.editor.manager;
 
-import static com.ss.rlib.util.array.ArrayFactory.toArray;
 import com.jme3.asset.AssetManager;
 import com.ss.editor.Editor;
 import com.ss.editor.FileExtensions;
 import com.ss.editor.annotation.FromAnyThread;
 import com.ss.editor.config.EditorConfig;
-import com.ss.rlib.manager.InitializeManager;
 import com.ss.rlib.util.FileUtils;
 import com.ss.rlib.util.array.Array;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +13,8 @@ import org.jetbrains.annotations.Nullable;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
+
+import static com.ss.rlib.util.array.ArrayFactory.toArray;
 
 /**
  * The class to manage custom classpath.
@@ -56,7 +56,6 @@ public class ClasspathManager {
     private volatile URLClassLoader additionalCL;
 
     private ClasspathManager() {
-        InitializeManager.valid(getClass());
         updateAdditionalCL();
     }
 

@@ -54,6 +54,7 @@ public class JFXApplication extends Application {
     public void start(final Stage stage) throws Exception {
         JFXApplication.instance = this;
         this.stage = stage;
+
         SvgImageLoaderFactory.install();
 
         final EditorConfig setupConfig = setupDefaultStageConfig(stage);
@@ -121,7 +122,6 @@ public class JFXApplication extends Application {
         stage.focusedProperty().addListener((observable, oldValue, newValue) ->
                 editor.setPaused(editorConfig.isStopRenderOnLostFocus() && !newValue));
         Platform.runLater(scene::notifyFinishBuild);
-        InitializeManager.initialize();
     }
 
     /**
@@ -150,4 +150,5 @@ public class JFXApplication extends Application {
     public static JFXApplication getInstance() {
         return instance;
     }
+
 }

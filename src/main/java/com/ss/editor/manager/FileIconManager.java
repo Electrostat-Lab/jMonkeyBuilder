@@ -1,7 +1,5 @@
 package com.ss.editor.manager;
 
-import static com.ss.editor.util.EditorUtil.toAssetPath;
-import static com.ss.rlib.util.ObjectUtils.notNull;
 import com.ss.editor.FileExtensions;
 import com.ss.editor.annotation.FXThread;
 import com.ss.editor.config.EditorConfig;
@@ -9,7 +7,6 @@ import com.ss.editor.ui.css.CssColorTheme;
 import com.ss.editor.util.EditorUtil;
 import com.ss.rlib.logging.Logger;
 import com.ss.rlib.logging.LoggerManager;
-import com.ss.rlib.manager.InitializeManager;
 import com.ss.rlib.util.FileUtils;
 import com.ss.rlib.util.array.Array;
 import com.ss.rlib.util.array.ArrayFactory;
@@ -28,6 +25,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static com.ss.editor.util.EditorUtil.toAssetPath;
+import static com.ss.rlib.util.ObjectUtils.notNull;
 
 /**
  * The class to manage file icons.
@@ -137,7 +137,6 @@ public class FileIconManager {
     private final ObjectDictionary<String, String> extensionToUrl;
 
     private FileIconManager() {
-        InitializeManager.valid(getClass());
         this.imageCache = DictionaryFactory.newIntegerDictionary();
         this.extensionToUrl = DictionaryFactory.newObjectDictionary();
         this.originalImageCache = DictionaryFactory.newObjectDictionary();
