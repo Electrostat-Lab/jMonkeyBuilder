@@ -1,4 +1,4 @@
-# jMonkeyEngine 3 SpaceShift Editor 1.0-RM-Version 
+# jMonkeyEngine3 jMonkeyBuilder 1.0-RM-Version 
 ## License: Apache Version 2.0 
 
 A minimalized version for jmb for code first approach, re-maintained by @pavl_g.
