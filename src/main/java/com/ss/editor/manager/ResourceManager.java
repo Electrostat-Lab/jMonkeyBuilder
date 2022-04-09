@@ -1,17 +1,5 @@
 package com.ss.editor.manager;
 
-import static com.ss.editor.FileExtensions.*;
-import static com.ss.editor.util.EditorUtil.*;
-import static com.ss.rlib.util.ArrayUtils.contains;
-import static com.ss.rlib.util.ArrayUtils.move;
-import static com.ss.rlib.util.FileUtils.getFiles;
-import static com.ss.rlib.util.FileUtils.toUrl;
-import static com.ss.rlib.util.ObjectUtils.notNull;
-import static com.ss.rlib.util.Utils.get;
-import static com.ss.rlib.util.array.ArrayFactory.toArray;
-import static com.ss.rlib.util.ref.ReferenceFactory.newRef;
-import static java.lang.System.currentTimeMillis;
-import static java.nio.file.StandardWatchEventKinds.*;
 import com.jme3.asset.AssetEventListener;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
@@ -29,7 +17,6 @@ import com.ss.rlib.classpath.ClassPathScannerFactory;
 import com.ss.rlib.concurrent.util.ThreadUtils;
 import com.ss.rlib.logging.Logger;
 import com.ss.rlib.logging.LoggerManager;
-import com.ss.rlib.manager.InitializeManager;
 import com.ss.rlib.util.FileUtils;
 import com.ss.rlib.util.StringUtils;
 import com.ss.rlib.util.Utils;
@@ -50,6 +37,19 @@ import java.nio.file.*;
 import java.nio.file.attribute.FileTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.ss.editor.FileExtensions.*;
+import static com.ss.editor.util.EditorUtil.*;
+import static com.ss.rlib.util.ArrayUtils.contains;
+import static com.ss.rlib.util.ArrayUtils.move;
+import static com.ss.rlib.util.FileUtils.getFiles;
+import static com.ss.rlib.util.FileUtils.toUrl;
+import static com.ss.rlib.util.ObjectUtils.notNull;
+import static com.ss.rlib.util.Utils.get;
+import static com.ss.rlib.util.array.ArrayFactory.toArray;
+import static com.ss.rlib.util.ref.ReferenceFactory.newRef;
+import static java.lang.System.currentTimeMillis;
+import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
  * The class to manage working with resources of an editor.
@@ -148,8 +148,6 @@ public class ResourceManager extends EditorThread implements AssetEventListener 
      * Instantiates a new Resource manager.
      */
     public ResourceManager() {
-        InitializeManager.valid(getClass());
-
         this.assetCacheTable = DictionaryFactory.newObjectDictionary();
         this.additionalEnvs = ArrayFactory.newArray(Path.class);
         this.watchKeys = ArrayFactory.newArray(WatchKey.class);

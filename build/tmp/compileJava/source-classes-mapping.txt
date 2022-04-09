@@ -102,6 +102,9 @@ com/ss/editor/ui/controller/model/tree/action/operation/animation/RemoveAnimatio
  com.ss.editor.ui.controller.model.tree.action.operation.animation.RemoveAnimationNodeOperation
 com/ss/editor/ui/controller/model/tree/action/particle/emitter/toneg0d/shape/CreateSphereShapeEmitterAction.java
  com.ss.editor.ui.controller.model.tree.action.particle.emitter.toneg0d.shape.CreateSphereShapeEmitterAction
+com/ss/editor/manager/EditorStateManager.java
+ com.ss.editor.manager.EditorStateManager
+ com.ss.editor.manager.EditorStateManager$State
 com/ss/editor/ui/controller/model/property/builder/impl/SpatialPropertyBuilder.java
  com.ss.editor.ui.controller.model.property.builder.impl.SpatialPropertyBuilder
 com/ss/editor/ui/component/asset/tree/resource/FileElement.java
@@ -312,9 +315,6 @@ com/ss/editor/util/SimpleFolderVisitor.java
  com.ss.editor.util.SimpleFolderVisitor
 com/ss/editor/ui/controller/filter/property/control/DirectionLightElementFilterPropertyControl.java
  com.ss.editor.ui.controller.filter.property.control.DirectionLightElementFilterPropertyControl
-com/ss/editor/util/EditorStateManager.java
- com.ss.editor.util.EditorStateManager
- com.ss.editor.util.EditorStateManager$State
 com/ss/editor/ui/controller/model/tree/action/operation/AddVehicleWheelOperation.java
  com.ss.editor.ui.controller.model.tree.action.operation.AddVehicleWheelOperation
 com/ss/editor/ui/component/editing/terrain/paint/TextureLayerSettings.java

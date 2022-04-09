@@ -130,7 +130,6 @@ public class JavaFXImageManager {
     private final Path cacheFolder;
 
     private JavaFXImageManager() {
-        InitializeManager.valid(getClass());
         final Path appFolder = Config.getAppFolderInUserHome();
         this.cacheFolder = appFolder.resolve(PREVIEW_CACHE_FOLDER);
         this.iioMetadatas = DictionaryFactory.newObjectDictionary();

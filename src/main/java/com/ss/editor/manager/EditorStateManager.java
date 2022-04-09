@@ -5,9 +5,10 @@ package com.ss.editor.manager;
  *
  * @author pavl_g.
  */
-public class EditorStateManager {
+public final class EditorStateManager {
     public enum State {
-        SAVING("Saving"), UPDATING("Updating"),
+        UPDATING("Updating"), INITIALIZING("Initializing"),
+        SAVING("Saving"), LOADING("Loading"),
         EXITING("Exiting"), OPENING_FILE("Opening File");
 
         private final String state;
@@ -26,8 +27,24 @@ public class EditorStateManager {
         EditorStateManager.currentState = currentState;
     }
 
-    public static State getCurrentState() {
+    public synchronized static State getCurrentState() {
         return currentState;
+    }
+
+    public static void setLoading() {
+        setCurrentState(State.LOADING);
+    }
+
+    public static boolean isLoading() {
+        return getCurrentState().state.equals(State.LOADING.getState());
+    }
+
+    public static void setInitializing() {
+        setCurrentState(State.INITIALIZING);
+    }
+
+    public static boolean isInitializing() {
+        return getCurrentState().state.equals(State.INITIALIZING.getState());
     }
 
     public static void setSaving() {
