@@ -30,7 +30,7 @@ import com.ss.editor.manager.ExecutorManager;
 import com.ss.editor.manager.WorkspaceManager;
 import com.ss.editor.ui.event.FXEventManager;
 import com.ss.editor.ui.event.impl.WindowChangeFocusEvent;
-import com.ss.editor.util.EditorStateManager;
+import com.ss.editor.manager.EditorStateManager;
 import com.ss.rlib.logging.Logger;
 import com.ss.rlib.logging.LoggerLevel;
 import com.ss.rlib.logging.LoggerManager;

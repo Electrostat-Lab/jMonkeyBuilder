@@ -1,4 +1,4 @@
-package com.ss.editor.util;
+package com.ss.editor.manager;
 
 /**
  * Defines a current editor state.

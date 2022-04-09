@@ -43,7 +43,7 @@ public class CreateRigidBodyControlAction extends AbstractCreateControlAction {
     @NotNull
     @Override
     protected RigidBodyControl createControl(@NotNull final Spatial parent) {
-        final RigidBodyControl rigidBodyControl = new RigidBodyControl();
+        final RigidBodyControl rigidBodyControl = new RigidBodyControl(0);
         rigidBodyControl.setEnabled(false);
         return rigidBodyControl;
     }
