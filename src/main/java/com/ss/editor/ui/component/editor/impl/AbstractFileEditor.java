@@ -19,7 +19,7 @@ import com.ss.editor.ui.event.FXEventManager;
 import com.ss.editor.ui.event.impl.FileChangedEvent;
 import com.ss.editor.ui.scene.EditorFXScene;
 import com.ss.editor.ui.util.DynamicIconSupport;
-import com.ss.editor.util.EditorStateManager;
+import com.ss.editor.manager.EditorStateManager;
 import com.ss.rlib.logging.Logger;
 import com.ss.rlib.logging.LoggerManager;
 import com.ss.rlib.ui.util.FXUtils;

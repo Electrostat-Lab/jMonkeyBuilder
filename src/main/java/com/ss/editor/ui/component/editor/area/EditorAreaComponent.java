@@ -24,7 +24,7 @@ import com.ss.editor.ui.css.CSSIds;
 import com.ss.editor.ui.event.FXEventManager;
 import com.ss.editor.ui.event.impl.*;
 import com.ss.editor.ui.scene.EditorFXScene;
-import com.ss.editor.util.EditorStateManager;
+import com.ss.editor.manager.EditorStateManager;
 import com.ss.editor.util.EditorUtil;
 import com.ss.rlib.concurrent.util.ThreadUtils;
 import com.ss.rlib.logging.Logger;

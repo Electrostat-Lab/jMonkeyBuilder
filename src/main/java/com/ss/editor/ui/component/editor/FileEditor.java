@@ -2,7 +2,6 @@ package com.ss.editor.ui.component.editor;
 
 import com.ss.editor.state.editor.EditorAppState;
 
-import com.ss.editor.util.EditorStateManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;

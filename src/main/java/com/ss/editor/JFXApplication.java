@@ -62,9 +62,6 @@ public class JFXApplication extends Application {
         // start jme renderer with lwjgl on a gl thread
         ExecutorManager.dispatchGLThread();
 
-        InitializeManager.initialize();
-
-
         buildScene();
     }
 
@@ -124,6 +121,7 @@ public class JFXApplication extends Application {
         stage.focusedProperty().addListener((observable, oldValue, newValue) ->
                 editor.setPaused(editorConfig.isStopRenderOnLostFocus() && !newValue));
         Platform.runLater(scene::notifyFinishBuild);
+        InitializeManager.initialize();
     }
 
     /**
