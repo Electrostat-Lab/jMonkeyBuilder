@@ -26,16 +26,15 @@ import com.ss.editor.config.Config;
 import com.ss.editor.config.EditorConfig;
 import com.ss.editor.executor.impl.GLTaskExecutor;
 import com.ss.editor.extension.loader.SceneLoader;
+import com.ss.editor.manager.EditorStateManager;
 import com.ss.editor.manager.ExecutorManager;
 import com.ss.editor.manager.WorkspaceManager;
 import com.ss.editor.ui.event.FXEventManager;
 import com.ss.editor.ui.event.impl.WindowChangeFocusEvent;
-import com.ss.editor.manager.EditorStateManager;
 import com.ss.rlib.logging.Logger;
 import com.ss.rlib.logging.LoggerLevel;
 import com.ss.rlib.logging.LoggerManager;
 import com.ss.rlib.logging.impl.FolderFileListener;
-import com.ss.rlib.manager.InitializeManager;
 import jme3_ext_xbuf.XbufLoader;
 import tonegod.emitter.filter.TonegodTranslucentBucketFilter;
 
@@ -172,7 +171,6 @@ public class Editor extends JmeToJFXApplication {
 
     @Override
     public void simpleInitApp() {
-        InitializeManager.initialize();
 
         renderManager.setPreferredLightMode(TechniqueDef.LightMode.SinglePass);
         renderManager.setSinglePassLightBatchSize(5);
@@ -271,22 +269,26 @@ public class Editor extends JmeToJFXApplication {
     @Override
     public void simpleUpdate(final float tpf) {
         super.simpleUpdate(tpf);
-
         previewNode.updateLogicalState(tpf);
         previewNode.updateGeometricState();
     }
 
     @Override
     public void update() {
+        // wait for loading unlock
+        JFXApplication.semaphore.waitForUnlock();
+
         // finish if the editor state isn't for updating the scene
         if (!EditorStateManager.isUpdating()) {
             return;
         }
+
         // update the editor enqueued components before being hooked to jme3 update
         final GLTaskExecutor editorGLTaskExecutor = GLTaskExecutor.getInstance();
         editorGLTaskExecutor.dispatch();
         // hook up jme3 update --> calls --> simpleUpdate
         super.update();
+
         listener.setLocation(cam.getLocation());
         listener.setRotation(cam.getRotation());
     }

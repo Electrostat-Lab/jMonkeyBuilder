@@ -5,8 +5,10 @@ import com.ss.editor.config.Config;
 import com.ss.editor.config.EditorConfig;
 import com.ss.editor.executor.impl.GLTaskExecutor;
 import com.ss.editor.manager.*;
+import com.ss.editor.thread.InitializationThread;
 import com.ss.editor.ui.builder.EditorFXSceneBuilder;
 import com.ss.editor.ui.scene.EditorFXScene;
+import com.ss.editor.util.Semaphore;
 import com.ss.rlib.manager.InitializeManager;
 import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
 import javafx.application.Application;
@@ -27,6 +29,10 @@ public class JFXApplication extends Application {
     private final GLTaskExecutor executor = GLTaskExecutor.getInstance();
     private final Editor editor = Editor.getInstance();
     private final EditorConfig editorConfig = EditorConfig.getInstance();
+
+    public static final Semaphore.Mutex mutex = Semaphore.Mutex.SIMPLE_MUTEX;
+    public static final Semaphore semaphore = Semaphore.build(mutex);
+
     private static JFXApplication instance;
     private volatile EditorFXScene scene;
     private volatile FrameTransferSceneProcessor sceneProcessor;
@@ -36,6 +42,11 @@ public class JFXApplication extends Application {
      * Begins the editor Ui in a new jfx instance.
      */
     public static void beginUiTransactions() {
+        mutex.setLockData(EditorStateManager.State.INITIALIZING);
+        mutex.setMonitorObject(instance);
+        // lock the mutex
+        semaphore.lock(JFXApplication.mutex);
+
         InitializeManager.register(ResourceManager.class);
         InitializeManager.register(JavaFXImageManager.class);
         InitializeManager.register(FileIconManager.class);
@@ -53,12 +64,18 @@ public class JFXApplication extends Application {
     @Override
     public void start(final Stage stage) throws Exception {
         JFXApplication.instance = this;
+        // unlock this semaphore for other waiting threads (initialization and loading)
+        JFXApplication.semaphore.unlock(JFXApplication.mutex);
         this.stage = stage;
 
         SvgImageLoaderFactory.install();
 
         final EditorConfig setupConfig = setupDefaultStageConfig(stage);
         observeWindowChanges(setupConfig);
+
+        // start initialization manager after 200 ms internal wait
+        final InitializationThread initializationThread = new InitializationThread();
+        initializationThread.start();
 
         // start jme renderer with lwjgl on a gl thread
         ExecutorManager.dispatchGLThread();
