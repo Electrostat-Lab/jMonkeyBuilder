@@ -7,8 +7,8 @@ package com.ss.editor.manager;
  */
 public final class EditorStateManager {
     public enum State {
-        UPDATING("Updating"), INITIALIZING("Initializing"),
-        SAVING("Saving"), LOADING("Loading"),
+        INITIALIZING("Initializing"), LOADING("Loading"),
+        SAVING("Saving"), UPDATING("Updating"),
         EXITING("Exiting"), OPENING_FILE("Opening File");
 
         private final String state;

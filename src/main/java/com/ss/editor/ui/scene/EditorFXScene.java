@@ -1,8 +1,8 @@
 package com.ss.editor.ui.scene;
 
-import static com.ss.editor.ui.util.UIUtils.fillComponents;
-import static com.ss.rlib.util.ClassUtils.unsafeCast;
+import com.ss.editor.JFXApplication;
 import com.ss.editor.annotation.FXThread;
+import com.ss.editor.manager.EditorStateManager;
 import com.ss.editor.ui.component.ScreenComponent;
 import com.ss.editor.ui.css.CSSIds;
 import com.ss.rlib.ui.util.FXUtils;
@@ -20,6 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.ss.editor.ui.util.UIUtils.fillComponents;
+import static com.ss.rlib.util.ClassUtils.unsafeCast;
 
 /**
  * The class implementation of the scene of JavaFX.
@@ -203,6 +206,10 @@ public class EditorFXScene extends Scene {
      */
     @FXThread
     private void showLoading() {
+        // lock the update
+        JFXApplication.mutex.setLockData(EditorStateManager.State.LOADING);
+        JFXApplication.mutex.setMonitorObject(this);
+        JFXApplication.semaphore.lock(JFXApplication.mutex);
 
         final VBox loadingLayer = getLoadingLayer();
         loadingLayer.setVisible(true);
@@ -231,6 +238,8 @@ public class EditorFXScene extends Scene {
 
         final StackPane container = getContainer();
         container.setDisable(false);
+        JFXApplication.semaphore.unlock(JFXApplication.mutex);
+
     }
 
     /**

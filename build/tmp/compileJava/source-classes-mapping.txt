@@ -392,8 +392,8 @@ com/ss/editor/control/brush/BrushControl.java
  com.ss.editor.control.brush.BrushControl
 com/ss/editor/ui/controller/model/tree/action/operation/RemoveVehicleWheelOperation.java
  com.ss.editor.ui.controller.model.tree.action.operation.RemoveVehicleWheelOperation
-com/ss/editor/JFXApplication.java
- com.ss.editor.JFXApplication
+com/ss/editor/EditorThread.java
+ com.ss.editor.EditorThread
 com/ss/editor/ui/component/creator/impl/texture/SingleColorTextureFileCreator.java
  com.ss.editor.ui.component.creator.impl.texture.SingleColorTextureFileCreator
 com/ss/editor/annotation/JMEThread.java
@@ -786,6 +786,8 @@ com/ss/editor/ui/controller/model/property/control/particle/influencer/interpola
  com.ss.editor.ui.controller.model.property.control.particle.influencer.interpolation.element.Vector3fInterpolationElement
 com/ss/editor/model/editor/Editor3DProvider.java
  com.ss.editor.model.editor.Editor3DProvider
+com/ss/editor/ui/component/ScreenComponent.java
+ com.ss.editor.ui.component.ScreenComponent
 com/ss/editor/ui/controller/model/tree/action/particle/emitter/toneg0d/influerencer/CreateColorParticleInfluencerAction.java
  com.ss.editor.ui.controller.model.tree.action.particle.emitter.toneg0d.influerencer.CreateColorParticleInfluencerAction
 com/ss/editor/ui/controller/model/node/spatial/particle/emitter/shape/EmitterSphereShapeModelNode.java
@@ -1085,6 +1087,9 @@ com/ss/editor/ui/component/editor/impl/TextFileEditor.java
  com.ss.editor.ui.component.editor.impl.TextFileEditor
 com/ss/editor/ui/controller/model/property/control/ModelPropertyControl.java
  com.ss.editor.ui.controller.model.property.control.ModelPropertyControl
+com/ss/editor/util/Semaphore.java
+ com.ss.editor.util.Semaphore
+ com.ss.editor.util.Semaphore$Mutex
 com/ss/editor/state/editor/impl/scene/AbstractSceneEditorAppState.java
  com.ss.editor.state.editor.impl.scene.AbstractSceneEditorAppState
  com.ss.editor.state.editor.impl.scene.AbstractSceneEditorAppState$1
@@ -1273,7 +1278,7 @@ com/ss/editor/ui/controller/model/tree/action/LoadModelAction.java
  com.ss.editor.ui.controller.model.tree.action.LoadModelAction
 com/ss/editor/ui/controller/model/tree/action/operation/scene/AddSceneLayerOperation.java
  com.ss.editor.ui.controller.model.tree.action.operation.scene.AddSceneLayerOperation
-com/ss/editor/EditorThread.java
- com.ss.editor.EditorThread
-com/ss/editor/ui/component/ScreenComponent.java
- com.ss.editor.ui.component.ScreenComponent
+com/ss/editor/thread/InitializationThread.java
+ com.ss.editor.thread.InitializationThread
+com/ss/editor/JFXApplication.java
+ com.ss.editor.JFXApplication
