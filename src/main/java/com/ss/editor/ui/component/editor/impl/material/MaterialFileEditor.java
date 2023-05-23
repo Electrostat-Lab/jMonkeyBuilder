@@ -1,13 +1,5 @@
 package com.ss.editor.ui.component.editor.impl.material;
 
-import static com.jme3.renderer.queue.RenderQueue.Bucket.Inherit;
-import static com.jme3.renderer.queue.RenderQueue.Bucket.values;
-import static com.ss.editor.Messages.MATERIAL_EDITOR_NAME;
-import static com.ss.editor.util.EditorUtil.getAssetFile;
-import static com.ss.editor.util.EditorUtil.toAssetPath;
-import static com.ss.editor.util.MaterialUtils.updateMaterialIdNeed;
-import static com.ss.rlib.util.ObjectUtils.notNull;
-import static javafx.collections.FXCollections.observableArrayList;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.MaterialKey;
 import com.jme3.material.Material;
@@ -21,7 +13,7 @@ import com.ss.editor.annotation.FromAnyThread;
 import com.ss.editor.manager.ResourceManager;
 import com.ss.editor.manager.WorkspaceManager;
 import com.ss.editor.model.undo.EditorOperation;
-import com.ss.editor.model.undo.EditorOperationControl;
+import com.ss.editor.model.undo.UndoRedoOperationControl;
 import com.ss.editor.model.undo.UndoableEditor;
 import com.ss.editor.model.undo.editor.MaterialChangeConsumer;
 import com.ss.editor.model.workspace.Workspace;
@@ -61,6 +53,15 @@ import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import static com.jme3.renderer.queue.RenderQueue.Bucket.Inherit;
+import static com.jme3.renderer.queue.RenderQueue.Bucket.values;
+import static com.ss.editor.Messages.MATERIAL_EDITOR_NAME;
+import static com.ss.editor.util.EditorUtil.getAssetFile;
+import static com.ss.editor.util.EditorUtil.toAssetPath;
+import static com.ss.editor.util.MaterialUtils.updateMaterialIdNeed;
+import static com.ss.rlib.util.ObjectUtils.notNull;
+import static javafx.collections.FXCollections.observableArrayList;
+
 /**
  * The implementation of the Editor to edit materials.
  *
@@ -91,7 +92,7 @@ public class MaterialFileEditor extends AbstractFileEditor<StackPane> implements
      * The operation controller.
      */
     @NotNull
-    private final EditorOperationControl operationControl;
+    private final UndoRedoOperationControl operationControl;
 
     /**
      * The changes counter.
@@ -208,7 +209,7 @@ public class MaterialFileEditor extends AbstractFileEditor<StackPane> implements
 
     private MaterialFileEditor() {
         this.editorAppState = new MaterialEditorAppState(this);
-        this.operationControl = new EditorOperationControl(this);
+        this.operationControl = new UndoRedoOperationControl(this);
         this.changeCounter = new AtomicInteger();
         addEditorState(editorAppState);
     }
@@ -261,7 +262,7 @@ public class MaterialFileEditor extends AbstractFileEditor<StackPane> implements
      * @return the operation controller.
      */
     @NotNull
-    private EditorOperationControl getOperationControl() {
+    private UndoRedoOperationControl getOperationControl() {
         return operationControl;
     }
 
@@ -269,7 +270,7 @@ public class MaterialFileEditor extends AbstractFileEditor<StackPane> implements
      * Execute the operation.
      */
     private void handleChanges(@NotNull final EditorOperation operation) {
-        final EditorOperationControl operationControl = getOperationControl();
+        final UndoRedoOperationControl operationControl = getOperationControl();
         operationControl.execute(operation);
     }
 
@@ -304,7 +305,7 @@ public class MaterialFileEditor extends AbstractFileEditor<StackPane> implements
 
         reload(material);
 
-        final EditorOperationControl operationControl = getOperationControl();
+        final UndoRedoOperationControl operationControl = getOperationControl();
         operationControl.clear();
     }
 
@@ -362,7 +363,7 @@ public class MaterialFileEditor extends AbstractFileEditor<StackPane> implements
      */
     @FromAnyThread
     public void redo() {
-        final EditorOperationControl operationControl = getOperationControl();
+        final UndoRedoOperationControl operationControl = getOperationControl();
         operationControl.redo();
     }
 
@@ -371,9 +372,10 @@ public class MaterialFileEditor extends AbstractFileEditor<StackPane> implements
      */
     @FromAnyThread
     public void undo() {
-        final EditorOperationControl operationControl = getOperationControl();
+        final UndoRedoOperationControl operationControl = getOperationControl();
         operationControl.undo();
     }
+
 
     @Override
     protected void createContent(@NotNull final StackPane root) {
@@ -672,7 +674,7 @@ public class MaterialFileEditor extends AbstractFileEditor<StackPane> implements
 
         MaterialUtils.migrateTo(newMaterial, getCurrentMaterial());
 
-        final EditorOperationControl operationControl = getOperationControl();
+        final UndoRedoOperationControl operationControl = getOperationControl();
         operationControl.clear();
 
         incrementChange();

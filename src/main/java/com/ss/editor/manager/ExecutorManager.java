@@ -64,7 +64,7 @@ public class ExecutorManager {
     /**
      * Dispatches a static Gl thread for the editor.
      */
-    public static void dispatchGLThread() {
+    public static void dispatchGLThread(Runnable onStart) {
         if (GL_THREAD == null) {
             synchronized (ExecutorManager.class) {
                 if (GL_THREAD == null) {
@@ -73,6 +73,8 @@ public class ExecutorManager {
                     final Runnable startWrapper = application::start;
                     GL_THREAD = new EditorThread(editorGroup, startWrapper, "GL-Renderer");
                     GL_THREAD.start();
+                    while (application.getAssetManager() == null); // block until the application resources are online
+                    onStart.run();
                 }
             }
         }

@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'application'
 }
 String engineVersion = "3.5.1-stable"
 group 'org.scrappers'
@@ -35,4 +35,8 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+application {
+    mainClass = "com.ss.editor.Launcher"
 }

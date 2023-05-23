@@ -55,12 +55,14 @@ public class SceneEditorAppState extends AbstractSceneEditorAppState<SceneFileEd
 
     @Override
     protected void undo() {
+        super.undo();
         final SceneFileEditor fileEditor = getFileEditor();
         fileEditor.undo();
     }
 
     @Override
     protected void redo() {
+        super.redo();
         final SceneFileEditor fileEditor = getFileEditor();
         fileEditor.redo();
     }
