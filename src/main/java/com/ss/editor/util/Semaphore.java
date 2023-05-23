@@ -65,7 +65,7 @@ public final class Semaphore {
     }
 
     public static Semaphore build(Mutex mutex) {
-        logger.info("Semaphore initialized !");
+        logger.fine("Semaphore initialized with monitor " + mutex.getMonitorObject() + " and data object " + mutex.getLockData());
         return new Semaphore(mutex);
     }
 
@@ -74,7 +74,7 @@ public final class Semaphore {
         this.mutex.setMonitorObject(monitorObject);
         // format the unlock data for a new lock dispatcher
         this.mutex.setUnlockData(new Object());
-        logger.info("Lock obtained !");
+        logger.fine("Lock obtained with monitor " + monitorObject);
     }
 
     public void waitForUnlock() {
@@ -89,7 +89,7 @@ public final class Semaphore {
         }
         // release the lock
         mutex.setUnlockData(mutex.getLockData());
-        logger.info("Unlocked");
+        logger.fine(locker + " Unlocked");
     }
 
     public Mutex getMutex() {

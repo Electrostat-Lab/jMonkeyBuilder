@@ -27,7 +27,7 @@ import com.ss.editor.extension.scene.SceneLayer;
 import com.ss.editor.manager.WorkspaceManager;
 import com.ss.editor.model.editor.ModelEditingProvider;
 import com.ss.editor.model.undo.EditorOperation;
-import com.ss.editor.model.undo.EditorOperationControl;
+import com.ss.editor.model.undo.UndoRedoOperationControl;
 import com.ss.editor.model.undo.UndoableEditor;
 import com.ss.editor.model.undo.editor.ModelChangeConsumer;
 import com.ss.editor.model.workspace.Workspace;
@@ -132,7 +132,7 @@ public abstract class AbstractSceneFileEditor<IM extends AbstractSceneFileEditor
      * The operation controller.
      */
     @NotNull
-    private final EditorOperationControl operationControl;
+    private final UndoRedoOperationControl operationControl;
 
     /**
      * The changes counter.
@@ -275,7 +275,7 @@ public abstract class AbstractSceneFileEditor<IM extends AbstractSceneFileEditor
      */
     public AbstractSceneFileEditor() {
         this.editorAppState = createEditorAppState();
-        this.operationControl = new EditorOperationControl(this);
+        this.operationControl = new UndoRedoOperationControl(this);
         this.changeCounter = new AtomicInteger();
         this.statsAppState = new StatsAppState(statsContainer);
         addEditorState(editorAppState);
@@ -608,7 +608,7 @@ public abstract class AbstractSceneFileEditor<IM extends AbstractSceneFileEditor
      */
     @FromAnyThread
     public void redo() {
-        final EditorOperationControl operationControl = getOperationControl();
+        final UndoRedoOperationControl operationControl = getOperationControl();
         operationControl.redo();
     }
 
@@ -617,7 +617,7 @@ public abstract class AbstractSceneFileEditor<IM extends AbstractSceneFileEditor
      */
     @FromAnyThread
     public void undo() {
-        final EditorOperationControl operationControl = getOperationControl();
+        final UndoRedoOperationControl operationControl = getOperationControl();
         operationControl.undo();
     }
 
@@ -749,7 +749,7 @@ public abstract class AbstractSceneFileEditor<IM extends AbstractSceneFileEditor
 
     @Override
     public void execute(@NotNull final EditorOperation operation) {
-        final EditorOperationControl operationControl = getOperationControl();
+        final UndoRedoOperationControl operationControl = getOperationControl();
         operationControl.execute(operation);
     }
 
@@ -757,7 +757,7 @@ public abstract class AbstractSceneFileEditor<IM extends AbstractSceneFileEditor
      * @return the operation controller.
      */
     @NotNull
-    private EditorOperationControl getOperationControl() {
+    private UndoRedoOperationControl getOperationControl() {
         return operationControl;
     }
 

@@ -1,6 +1,5 @@
 package com.ss.editor.state.editor.impl.material;
 
-import static com.ss.rlib.util.ObjectUtils.notNull;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
@@ -37,6 +36,8 @@ import com.ss.rlib.util.dictionary.ObjectDictionary;
 import javafx.scene.input.KeyCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static com.ss.rlib.util.ObjectUtils.notNull;
 
 /**
  * The implementation the 3D part of the {@link MaterialFileEditor}.
@@ -418,14 +419,17 @@ public class MaterialEditorAppState extends AdvancedAbstractEditorAppState<Mater
 
     @Override
     protected void undo() {
+        super.undo();
         final MaterialFileEditor fileEditor = getFileEditor();
         fileEditor.undo();
     }
 
     @Override
     protected void redo() {
+        super.redo();
         final MaterialFileEditor fileEditor = getFileEditor();
         fileEditor.redo();
+
     }
 
     @Override

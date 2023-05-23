@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<list>
-    <set name="Graphics.enablePBR" value="true"/>
-
-    <set name="Dev.debug" value="false"/>
-    <set name="Dev.debugJFX" value="false"/>
-</list>

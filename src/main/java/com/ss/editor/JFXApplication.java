@@ -5,7 +5,6 @@ import com.ss.editor.config.Config;
 import com.ss.editor.config.EditorConfig;
 import com.ss.editor.executor.impl.GLTaskExecutor;
 import com.ss.editor.manager.*;
-import com.ss.editor.thread.InitializationThread;
 import com.ss.editor.ui.builder.EditorFXSceneBuilder;
 import com.ss.editor.ui.scene.EditorFXScene;
 import com.ss.editor.util.Semaphore;
@@ -15,7 +14,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
 import static com.jme3x.jfx.injfx.JmeToJFXIntegrator.bind;
 
 /**
@@ -73,14 +71,16 @@ public class JFXApplication extends Application {
         final EditorConfig setupConfig = setupDefaultStageConfig(stage);
         observeWindowChanges(setupConfig);
 
-        // start initialization manager after 200 ms internal wait
-        final InitializationThread initializationThread = new InitializationThread();
-        initializationThread.start();
-
         // start jme renderer with lwjgl on a gl thread
-        ExecutorManager.dispatchGLThread();
-
-        buildScene();
+        // then build the scene
+        ExecutorManager.dispatchGLThread(new Runnable() {
+            @Override
+            public void run() {
+                buildScene();
+                JFXApplication.semaphore.waitForUnlock();
+                InitializeManager.initialize();
+            }
+        });
     }
 
     @Override
@@ -125,9 +125,6 @@ public class JFXApplication extends Application {
         return editorConfig;
     }
 
-    /**
-     * Build the scene.
-     */
     private void buildScene() {
         this.scene = EditorFXSceneBuilder.build(stage);
         executor.addToExecute(() -> createSceneProcessor(scene, editor));
@@ -167,5 +164,4 @@ public class JFXApplication extends Application {
     public static JFXApplication getInstance() {
         return instance;
     }
-
 }

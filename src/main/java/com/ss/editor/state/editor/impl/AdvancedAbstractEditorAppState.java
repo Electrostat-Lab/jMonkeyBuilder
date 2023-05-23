@@ -1,7 +1,5 @@
 package com.ss.editor.state.editor.impl;
 
-import static java.util.Objects.requireNonNull;
-import static org.apache.commons.lang3.ArrayUtils.toArray;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.input.InputManager;
@@ -13,17 +11,22 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import com.ss.editor.JFXApplication;
 import com.ss.editor.annotation.JMEThread;
+import com.ss.editor.manager.EditorStateManager;
 import com.ss.editor.model.EditorCamera;
 import com.ss.editor.ui.component.editor.FileEditor;
 import com.ss.editor.util.LocalObjects;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.ss.rlib.function.BooleanFloatConsumer;
 import com.ss.rlib.function.FloatFloatConsumer;
 import com.ss.rlib.util.dictionary.DictionaryFactory;
 import com.ss.rlib.util.dictionary.ObjectDictionary;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tonegod.emitter.filter.TonegodTranslucentBucketFilter;
+
+import static java.util.Objects.requireNonNull;
+import static org.apache.commons.lang3.ArrayUtils.toArray;
 
 /**
  * The base implementation of the {@link com.jme3.app.state.AppState} for the editor.
@@ -610,12 +613,24 @@ public abstract class AdvancedAbstractEditorAppState<T extends FileEditor> exten
      * Redo last operation.
      */
     protected void redo() {
+        // lock the update with a semaphore
+        JFXApplication.mutex.setLockData(EditorStateManager.State.LOADING);
+        JFXApplication.mutex.setMonitorObject(this);
+        JFXApplication.semaphore.lock(this);
+
+        EditorStateManager.setLoading();
     }
 
     /**
      * Undo last operation.
      */
     protected void undo() {
+        // lock the update with a semaphore
+        JFXApplication.mutex.setLockData(EditorStateManager.State.LOADING);
+        JFXApplication.mutex.setMonitorObject(this);
+        JFXApplication.semaphore.lock(this);
+
+        EditorStateManager.setLoading();
     }
 
     /**
